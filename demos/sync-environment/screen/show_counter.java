@@ -8,11 +8,11 @@ import jason.asSemantics.Unifier;
 import jason.asSyntax.NumberTerm;
 import jason.asSyntax.Term;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
 
 public class show_counter extends DefaultInternalAction {
 
-    private Logger logger = Logger.getLogger("act-sync.mas2j."+show_counter.class.getName());
+    private Logger logger = LoggerFactory.getLogger("act-sync.mas2j."+show_counter.class.getName());
 
     private int pos = -1;
 
@@ -26,7 +26,7 @@ public class show_counter extends DefaultInternalAction {
             Counters.get().setVl(pos, (int)((NumberTerm)args[0]).solve());
             return true;
         } catch (Exception e) {
-            logger.warning("Error in internal action 'show_counter'! "+e);
+            logger.warn("Error in internal action 'show_counter'! "+e);
         }
         return false;
     }

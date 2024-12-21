@@ -86,7 +86,7 @@ public class relevant_rules extends DefaultInternalAction {
             }
             return un.unifies(args[1],result);
         } catch (Exception e) {
-            ts.getLogger().warning("Error in internal action 'relevant_rules'! "+e);
+            ts.getLogger().warn("Error in internal action 'relevant_rules'! "+e);
         }
         return false;
     }

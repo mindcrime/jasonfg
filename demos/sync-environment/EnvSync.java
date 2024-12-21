@@ -5,13 +5,13 @@ import jason.asSyntax.Literal;
 import jason.asSyntax.Structure;
 import jason.environment.TimeSteppedEnvironment;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
 
 import screen.Counters;
 
 public class EnvSync extends TimeSteppedEnvironment {
 
-    private Logger logger = Logger.getLogger(EnvSync.class.getName());
+    private Logger logger = LoggerFactory.getLogger(EnvSync.class.getName());
 
     int actionCount = 0; // counts the number of actions executed
 

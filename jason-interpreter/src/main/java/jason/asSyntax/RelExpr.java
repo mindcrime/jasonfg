@@ -6,8 +6,9 @@ import jason.asSyntax.parser.as2j;
 
 import java.io.StringReader;
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -38,7 +39,7 @@ import org.w3c.dom.Element;
 public class RelExpr extends BinaryStructure implements LogicalFormula {
 
     private static final long serialVersionUID = 1L;
-    private static Logger logger = Logger.getLogger(RelExpr.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(RelExpr.class.getName());
 
     public enum RelationalOp {
         none   { public String toString() {
@@ -151,22 +152,22 @@ public class RelExpr extends BinaryStructure implements LogicalFormula {
                                 answer = LogExpr.createUnifIterator(un);
                         } else {
                             // both are vars, error
-                            logger.log(Level.SEVERE, "Both arguments of "+getTerm(0)+" =.. "+getTerm(1)+" are variables!");
+                            logger.error( "Both arguments of "+getTerm(0)+" =.. "+getTerm(1)+" are variables!");
                         }
                     }
                 }
 
             } catch (Exception e) {
-                logger.log(Level.SEVERE, "The arguments of operator =.. are not Literal and List.", e);
+                logger.error( "The arguments of operator =.. are not Literal and List.", e);
             }
             break;
         }
 
         if (answer == null) {
-            if (ag != null && ag.getLogger().isLoggable(Level.FINE)) ag.getLogger().log(Level.FINE, "     | "+this+" failed "+ " -- "+un);
+            if (ag != null && ag.getLogger().isDebugEnabled()) ag.getLogger().debug( "     | "+this+" failed "+ " -- "+un);
             return LogExpr.EMPTY_UNIF_LIST.iterator();  // empty iterator for unifier
         } else {
-            if (ag != null && ag.getLogger().isLoggable(Level.FINE)) ag.getLogger().log(Level.FINE, "     | "+this+" succeeded "+ " -- "+un);
+            if (ag != null && ag.getLogger().isDebugEnabled()) ag.getLogger().debug( "     | "+this+" succeeded "+ " -- "+un);
             return answer;
         }
     }
@@ -177,7 +178,7 @@ public class RelExpr extends BinaryStructure implements LogicalFormula {
         try {
             return (LogicalFormula)parser.rel_expr();
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Error parsing expression "+sExpr,e);
+            logger.error("Error parsing expression "+sExpr,e);
         }
         return null;
     }

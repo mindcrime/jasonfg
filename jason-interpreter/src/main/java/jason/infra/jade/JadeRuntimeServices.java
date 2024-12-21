@@ -6,8 +6,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jade.core.Agent;
 import jade.domain.DFService;
@@ -26,7 +27,7 @@ import jason.runtime.Settings;
 
 public class JadeRuntimeServices implements RuntimeServices {
 
-    private static Logger logger  = Logger.getLogger(JadeRuntimeServices.class.getName());
+    private static Logger logger  = LoggerFactory.getLogger(JadeRuntimeServices.class.getName());
 
     private ContainerController cc;
 
@@ -50,8 +51,8 @@ public class JadeRuntimeServices implements RuntimeServices {
     @Override
     public String createAgent(String agName, String agSource, String agClass, List<String> archClasses, ClassParameters bbPars, Settings stts, jason.asSemantics.Agent father) throws Exception {
         try {
-            if (logger.isLoggable(Level.FINE)) {
-                logger.fine("Creating jade agent " + agName + "from source " + agSource + "(agClass=" + agClass + ", archClass=" + archClasses + ", settings=" + stts);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Creating jade agent " + agName + "from source " + agSource + "(agClass=" + agClass + ", archClass=" + archClasses + ", settings=" + stts);
             }
 
             AgentParameters ap = new AgentParameters();
@@ -66,7 +67,7 @@ public class JadeRuntimeServices implements RuntimeServices {
 
             return agName;
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error creating agent " + agName, e);
+            logger.error( "Error creating agent " + agName, e);
         }
         return null;
     }
@@ -105,9 +106,9 @@ public class JadeRuntimeServices implements RuntimeServices {
             }
             */
             return ags;
-            //logger.warning("getAgentsName is not implemented yet!");
+            //logger.warn("getAgentsName is not implemented yet!");
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error getting agents' name", e);
+            logger.error( "Error getting agents' name", e);
         }
         return null;
     }
@@ -116,7 +117,7 @@ public class JadeRuntimeServices implements RuntimeServices {
         try {
             return getAgentsNames().size();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error getting agents qty", e);
+            logger.error( "Error getting agents qty", e);
             return 0;
         }
     }
@@ -126,14 +127,14 @@ public class JadeRuntimeServices implements RuntimeServices {
         try {
             AgentController ac = cc.getAgent(agName);
             if (ac == null) {
-                logger.warning("Agent "+agName+" does not exist!");
+                logger.warn("Agent "+agName+" does not exist!");
             } else {
                 // TODO: if (ag.getTS().getAg().canBeKilledBy(byAg))
                 ac.kill();
                 return true;
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error killing agent", e);
+            logger.error( "Error killing agent", e);
         }
         return false;
     }

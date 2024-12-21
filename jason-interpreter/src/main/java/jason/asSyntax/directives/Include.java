@@ -3,8 +3,9 @@ package jason.asSyntax.directives;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jason.asSemantics.Agent;
 import jason.asSyntax.Atom;
@@ -17,7 +18,7 @@ import jason.util.Config;
 /** Implementation of the <code>include</code> directive. */
 public class Include extends DefaultDirective implements Directive {
 
-    static Logger logger = Logger.getLogger(Include.class.getName());
+    static Logger logger = LoggerFactory.getLogger(Include.class.getName());
 
     private SourcePath aslSourcePath = new SourcePath();
 
@@ -62,7 +63,7 @@ public class Include extends DefaultDirective implements Directive {
                     directive.setTerm(1, ns);
                 } else {
                     if (! directive.getTerm(1).isAtom()) {
-                        logger.log(Level.SEVERE, "The second parameter of the directive include (the namespace) should be an atom and not "+directive.getTerm(1)+". It is being ignored!");
+                        logger.error( "The second parameter of the directive include (the namespace) should be an atom and not "+directive.getTerm(1)+". It is being ignored!");
                     } else {
                         ns = new Atom( ((Atom)directive.getTerm(1)).getFunctor() );
                     }
@@ -75,14 +76,14 @@ public class Include extends DefaultDirective implements Directive {
             ag.setASLSrc(file);
             sparser.setNS(ns);
             sparser.agent(ag);
-            logger.fine("as2j: AgentSpeak program '"+file+"' parsed successfully!");
+            logger.debug("as2j: AgentSpeak program '"+file+"' parsed successfully!");
             return ag;
         } catch (FileNotFoundException e) {
-            logger.log(Level.SEVERE,"The included file '"+file+"' was not found! (it is being included in the agent '"+outerContent.getTS().getAgArch().getAgName()+"')");
+            logger.error("The included file '"+file+"' was not found! (it is being included in the agent '"+outerContent.getTS().getAgArch().getAgName()+"')");
         } catch (jason.asSyntax.parser.ParseException e) {
-            logger.log(Level.SEVERE,"as2j: error parsing \"" + file + "\": "+e.getMessage()+ "(it is being included in the agent '"+outerContent.getTS().getAgArch().getAgName()+"')");
+            logger.error("as2j: error parsing \"" + file + "\": "+e.getMessage()+ "(it is being included in the agent '"+outerContent.getTS().getAgArch().getAgName()+"')");
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"as2j: error including \"" + file + "\"", e);
+            logger.error("as2j: error including \"" + file + "\"", e);
         }
         return null;
     }

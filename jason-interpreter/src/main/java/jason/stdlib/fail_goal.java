@@ -115,10 +115,10 @@ public class fail_goal extends succeed_goal {
                 	failEvent = new Event(failEvent.getTrigger().capply(un), failEvent.getIntention());
                 	addAnnotsToFailEvent(failEvent);
                     ts.getC().addEvent(failEvent);
-                    ts.getLogger().fine("'.fail_goal("+im.getTrigger()+")' is generating a goal deletion event: " + failEvent.getTrigger());
+                    ts.getLogger().debug("'.fail_goal("+im.getTrigger()+")' is generating a goal deletion event: " + failEvent.getTrigger());
                     return 2;
                 } else { // i is finished or without failure plan
-                    ts.getLogger().fine("'.fail_goal("+im.getTrigger()+")' is removing the intention without event:\n" + i);
+                    ts.getLogger().debug("'.fail_goal("+im.getTrigger()+")' is removing the intention without event:\n" + i);
                     if (ts.hasGoalListener())
                         for (GoalListener gl: ts.getGoalListeners())
                             gl.goalFinished(im.getTrigger(), null);

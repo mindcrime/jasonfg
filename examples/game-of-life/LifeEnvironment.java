@@ -5,11 +5,11 @@ import jason.asSyntax.Literal;
 import jason.asSyntax.Structure;
 import jason.environment.grid.Location;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
 
 public class LifeEnvironment extends jason.environment.TimeSteppedEnvironment {
 
-    private Logger logger = Logger.getLogger("game-of-life.mas2j."+LifeEnvironment.class.getName());
+    private Logger logger = LoggerFactory.getLogger("game-of-life.mas2j."+LifeEnvironment.class.getName());
 
     private LifeModel model;
 

@@ -1,6 +1,6 @@
 package jia;
 
-import java.util.logging.Level;
+
 
 import jason.asSemantics.DefaultInternalAction;
 import jason.asSemantics.TransitionSystem;
@@ -20,7 +20,7 @@ public class neighbour extends DefaultInternalAction {
             int itoy = (int) ((NumberTerm) terms[3]).solve();
             return new Location(iagx, iagy).isNeigbour(new Location(itox, itoy));
         } catch (Throwable e) {
-            ts.getLogger().log(Level.SEVERE, "neighbour error: "+e, e);
+            ts.getLogger().error( "neighbour error: "+e, e);
         }
         return false;
     }

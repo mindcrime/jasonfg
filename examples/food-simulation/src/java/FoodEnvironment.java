@@ -13,11 +13,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
 
 public class FoodEnvironment extends TimeSteppedEnvironment {
 
-    private Logger logger = Logger.getLogger("game-of-life.mas2j."+FoodEnvironment.class.getName());
+    private Logger logger = LoggerFactory.getLogger("game-of-life.mas2j."+FoodEnvironment.class.getName());
 
     private FoodModel model;
     private FoodView view;
@@ -83,7 +83,7 @@ public class FoodEnvironment extends TimeSteppedEnvironment {
             } else if (actId.equals("random_move")) {
                 model.randomMove(agId);
             } else {
-                logger.warning("Unknown action: "+action);
+                logger.warn("Unknown action: "+action);
             }
         } catch (Exception e) {}
         return true;
@@ -167,7 +167,7 @@ public class FoodEnvironment extends TimeSteppedEnvironment {
         if (name != null) {
             updateAgPercept(name, ag);
         } else {
-            logger.warning("Can not give perception to "+ag+" because it is no registered!");
+            logger.warn("Can not give perception to "+ag+" because it is no registered!");
         }
     }
 

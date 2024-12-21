@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
+
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -326,7 +326,7 @@ public class ExecutionControlGUI extends ExecutionControl {
                 storeAgHistory(currentAgName, getCycleNumber(), agState);
             } catch (Exception e) {
                 jTA.setText("Error getting the state of agent "+currentAgName);
-                logger.log(Level.SEVERE,"Error:",e);
+                logger.error("Error:",e);
             }
         }
 
@@ -436,7 +436,7 @@ public class ExecutionControlGUI extends ExecutionControl {
     @SuppressWarnings("unchecked")
     public void receiveFinishedCycle(final String agName, boolean breakpoint, final int cycle) {
         if (!listModel.contains(agName)) {
-            logger.fine("New agent "+agName);
+            logger.debug("New agent "+agName);
             listModel.addElement(agName);
         }
 
@@ -445,7 +445,7 @@ public class ExecutionControlGUI extends ExecutionControl {
             storeAgHistory(agName, cycle, infraControl.getAgState(agName));
         } catch (Exception e) {
             jTA.setText("Error getting the state of agent "+agName);
-            logger.log(Level.SEVERE,"Error:",e);
+            logger.error("Error:",e);
         }
 
         this.breakpoint = breakpoint;
@@ -467,7 +467,7 @@ public class ExecutionControlGUI extends ExecutionControl {
     /** called when all agents have finished the current cycle */
     protected void allAgsFinished() {
         if (waitAllAgs) {
-            logger.fine("All agents have finished cycle "+getCycleNumber());
+            logger.debug("All agents have finished cycle "+getCycleNumber());
             countCycles++;
             if (testStop()) {
                 stopRun();

@@ -7,7 +7,7 @@ import jason.asSyntax.NumberTerm;
 import jason.asSyntax.NumberTermImpl;
 import jason.asSyntax.Term;
 
-import java.util.logging.Level;
+
 
 import arch.MinerArch;
 import env.WorldModel;
@@ -43,7 +43,7 @@ public class add_fatigue extends DefaultInternalAction {
             int r = (int)(in + in * model.getAgFatigue(agId, ig));
             return un.unifies(terms[resultIndex], new NumberTermImpl(r));
         } catch (Throwable e) {
-            ts.getLogger().log(Level.SEVERE, "jia.add_fatigue error: "+e, e);
+            ts.getLogger().error( "jia.add_fatigue error: "+e, e);
         }
         return false;
     }

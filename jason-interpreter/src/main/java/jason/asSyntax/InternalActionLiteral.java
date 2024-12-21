@@ -2,8 +2,9 @@ package jason.asSyntax;
 
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -23,7 +24,7 @@ import jason.stdlib.puts;
 public class InternalActionLiteral extends Structure implements LogicalFormula {
 
     private static final long serialVersionUID = 1L;
-    private static Logger logger = Logger.getLogger(InternalActionLiteral.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(InternalActionLiteral.class.getName());
 
     private InternalAction ia = null; // reference to the object that implements the internal action, stored here to speed up the process of looking for the IA class inside the agent
 
@@ -85,28 +86,28 @@ public class InternalActionLiteral extends Structure implements LogicalFormula {
             try {
                 InternalAction ia = getIA(ag);
                 if (!ia.canBeUsedInContext()) {
-                    logger.log(Level.SEVERE, getErrorMsg() + ": internal action "+getFunctor()+" cannot be used in context or rules!");
+                    logger.error( getErrorMsg() + ": internal action "+getFunctor()+" cannot be used in context or rules!");
                     return LogExpr.EMPTY_UNIF_LIST.iterator();
                 }
                 // calls IA's execute method
                 Object oresult = ia.execute(ag.getTS(), un, ia.prepareArguments(this, un));
                 if (oresult instanceof Boolean) {
                     if ((Boolean)oresult) {
-                        if (ag.getLogger().isLoggable(Level.FINE)) ag.getLogger().log(Level.FINE, "     | internal action "+this+" executed "+ " -- "+un);
+                        if (ag.getLogger().isDebugEnabled()) ag.getLogger().debug( "     | internal action "+this+" executed "+ " -- "+un);
                         return LogExpr.createUnifIterator(un);
                     } else {
-                        if (ag.getLogger().isLoggable(Level.FINE)) ag.getLogger().log(Level.FINE, "     | internal action "+this+" failed "+ " -- "+un);
+                        if (ag.getLogger().isDebugEnabled()) ag.getLogger().debug( "     | internal action "+this+" failed "+ " -- "+un);
                     }
                 } else if (oresult instanceof Iterator) {
                     //if (kForChache == null) {
-                    if (ag.getLogger().isLoggable(Level.FINE)) {
+                    if (ag.getLogger().isDebugEnabled()) {
                         return new Iterator<Unifier>() {
                             @Override public boolean hasNext() {
                                 return ((Iterator<Unifier>) oresult).hasNext();
                             }
                             @Override public Unifier next() {
                                 Unifier r = ((Iterator<Unifier>) oresult).next();
-                                ag.getLogger().log(Level.FINE, "     | internal action "+InternalActionLiteral.this+" option "+ " -- "+r);
+                                ag.getLogger().debug( "     | internal action "+InternalActionLiteral.this+" option "+ " -- "+r);
                                 return r;
                             }
                         };
@@ -123,7 +124,7 @@ public class InternalActionLiteral extends Structure implements LogicalFormula {
                 } catch (InterruptedException e1) {                }
                 return logicalConsequence(ag, un);
             } catch (Exception e) {
-                logger.log(Level.SEVERE, getErrorMsg() + ": " + e.getMessage(), e);
+                logger.error( getErrorMsg() + ": " + e.getMessage(), e);
             }
         }
         return LogExpr.EMPTY_UNIF_LIST.iterator();  // empty iterator for unifier

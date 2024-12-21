@@ -2,7 +2,7 @@ package jason.architecture;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.logging.Level;
+
 
 import jason.asSemantics.ActionExec;
 import jason.asSemantics.Message;
@@ -108,7 +108,7 @@ public class AgArch implements Comparable<AgArch>, Serializable {
                 } catch (Exception e) {
                     System.out.println("Error creating custom agent architecture."+e);
                     e.printStackTrace();
-                    ts.getLogger().log(Level.SEVERE,"Error creating custom agent architecture.", e);
+                    ts.getLogger().error("Error creating custom agent architecture.", e);
                 }
             }
         }

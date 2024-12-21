@@ -8,8 +8,9 @@ import java.io.StringReader;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -24,7 +25,7 @@ import org.w3c.dom.Element;
 public class LogExpr extends BinaryStructure implements LogicalFormula {
 
     private static final long serialVersionUID = 1L;
-    private static Logger logger = Logger.getLogger(LogExpr.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(LogExpr.class.getName());
 
     public static final List<Unifier> EMPTY_UNIF_LIST = Collections.emptyList();
 
@@ -171,7 +172,7 @@ public class LogExpr extends BinaryStructure implements LogicalFormula {
                 }
             }
 
-            logger.log(Level.SEVERE, "Error evaluating expression "+this+". \nlhs elements="+slhs+". \nrhs elements="+srhs,e);
+            logger.error( "Error evaluating expression "+this+". \nlhs elements="+slhs+". \nrhs elements="+srhs,e);
         }
         return EMPTY_UNIF_LIST.iterator();  // empty iterator for unifier
     }
@@ -196,7 +197,7 @@ public class LogExpr extends BinaryStructure implements LogicalFormula {
         try {
             return (LogicalFormula)parser.log_expr();
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Error parsing expression "+sExpr,e);
+            logger.error("Error parsing expression "+sExpr,e);
         }
         return null;
     }

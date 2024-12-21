@@ -6,7 +6,7 @@ import java.util.logging.*;
 
 public class World extends Environment {
 
-    private Logger logger = Logger.getLogger("meta-events.mas2j."+World.class.getName());
+    private Logger logger = LoggerFactory.getLogger("meta-events.mas2j."+World.class.getName());
 
     Literal lb = ASSyntax.createLiteral("battery", new Atom("low"));
 

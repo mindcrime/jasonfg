@@ -27,7 +27,7 @@ public class VCWorld extends Environment {
 
     /** general delegations */
     private HouseGUI gui = new HouseGUI();
-    private Logger   logger = Logger.getLogger("env."+VCWorld.class.getName());
+    private Logger   logger = LoggerFactory.getLogger("env."+VCWorld.class.getName());
     private Random   r = new Random();
 
     /** constant terms used for perception */

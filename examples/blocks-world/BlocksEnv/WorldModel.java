@@ -6,13 +6,13 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
 
 public class WorldModel extends GridWorldModel {
 
     public static final int   BLOCK = 32;
     public static final int   TABLE = 64;
-    private Logger            logger   = Logger.getLogger("BlocksWorld.mas2j." + WorldModel.class.getName());
+    private Logger            logger   = LoggerFactory.getLogger("BlocksWorld.mas2j." + WorldModel.class.getName());
 
 
     private String                     id = "WorldModel";

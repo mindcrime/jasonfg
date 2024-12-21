@@ -1,7 +1,8 @@
 package jason.asSyntax;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.json.Json;
 import javax.json.JsonValue;
@@ -13,7 +14,7 @@ import org.w3c.dom.Element;
 public final class NumberTermImpl extends DefaultTerm implements NumberTerm {
 
     private static final long serialVersionUID = 1L;
-    private static Logger logger = Logger.getLogger(NumberTermImpl.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(NumberTermImpl.class.getName());
 
     private final double value;
 
@@ -29,7 +30,7 @@ public final class NumberTermImpl extends DefaultTerm implements NumberTerm {
         try {
             t = Double.parseDouble(sn);
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Error setting number term value from "+sn,e);
+            logger.error("Error setting number term value from "+sn,e);
         }
         value = t;
     }

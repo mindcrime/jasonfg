@@ -9,8 +9,9 @@ import jason.runtime.RuntimeServices;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.w3c.dom.Document;
 
@@ -24,7 +25,7 @@ public class LocalExecutionControl implements ExecutionControlInfraTier {
 
     private BaseLocalMAS masRunner = null;
 
-    private static Logger logger = Logger.getLogger(LocalExecutionControl.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(LocalExecutionControl.class.getName());
 
     protected ExecutorService executor = Executors.newSingleThreadExecutor();
 
@@ -35,7 +36,7 @@ public class LocalExecutionControl implements ExecutionControlInfraTier {
             userController.setExecutionControlInfraTier(this);
             userController.init(userControlClass.getParametersArray());
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error ", e);
+            logger.error( "Error ", e);
             throw new JasonException("The user execution control class instantiation '" + userControlClass + "' has failed!" + e.getMessage());
         }
     }

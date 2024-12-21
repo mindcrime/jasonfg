@@ -6,8 +6,9 @@ import jason.asSyntax.parser.as2j;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for all terms.
@@ -23,7 +24,7 @@ import java.util.logging.Logger;
 public abstract class DefaultTerm implements Term, Serializable {
 
     private static final long serialVersionUID = 1L;
-    private static Logger logger = Logger.getLogger(Term.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(Term.class.getName());
 
     protected Integer    hashCodeCache = null;
     protected SourceInfo srcInfo       = null;
@@ -35,7 +36,7 @@ public abstract class DefaultTerm implements Term, Serializable {
         try {
             return parser.term();
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Error parsing term " + sTerm,e);
+            logger.error("Error parsing term " + sTerm,e);
             return null;
         }
     }

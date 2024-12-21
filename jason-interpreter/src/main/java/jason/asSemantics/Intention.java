@@ -56,7 +56,7 @@ public class Intention implements Serializable, Comparable<Intention>, Iterable<
 
     //private Trigger initialTrigger = null; // just for additional information/debug (not really necessary)
 
-    //static private Logger logger = Logger.getLogger(Intention.class.getName());
+    //static private Logger logger = LoggerFactory.getLogger(Intention.class.getName());
 
     public Intention() {
         id = idCount.incrementAndGet();

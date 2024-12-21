@@ -15,8 +15,9 @@ import jason.asSyntax.Pred;
 import jason.asSyntax.directives.DefaultDirective;
 import jason.asSyntax.directives.Directive;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of the Exclusive BDG pattern (see DALT 2006 paper)
@@ -25,7 +26,7 @@ import java.util.logging.Logger;
  */
 public class EBDG extends DefaultDirective implements Directive {
 
-    static Logger logger = Logger.getLogger(EBDG.class.getName());
+    static Logger logger = LoggerFactory.getLogger(EBDG.class.getName());
 
     @Override
     public Agent process(Pred directive, Agent outerContent, Agent innerContent) {
@@ -89,7 +90,7 @@ public class EBDG extends DefaultDirective implements Directive {
 
             return newAg;
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Directive EBDG error.", e);
+            logger.error("Directive EBDG error.", e);
         }
         return null;
     }

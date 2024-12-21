@@ -4,8 +4,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jade.core.AID;
 import jade.domain.DFService;
@@ -30,15 +31,17 @@ public class JasonBridgeArch extends AgArch {
 
     JadeAgArch jadeAg;
     AID environmentAID = null;
-    Logger logger = jade.util.Logger.getMyLogger(this.getClass().getName());
-
+    // Logger logger = jade.util.Logger.getMyLogger(this.getClass().getName());
+    Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+    
     // map of pending actions
     private Map<String,ActionExec> myPA = new HashMap<String,ActionExec>();
 
 
     public JasonBridgeArch(JadeAgArch jadeAg) {
         this.jadeAg = jadeAg;
-        logger = jade.util.Logger.getMyLogger(this.getClass().getName() + "." + getAgName());
+        // logger = jade.util.Logger.getMyLogger(this.getClass().getName() + "." + getAgName());
+        logger = LoggerFactory.getLogger(this.getClass().getName() + "." + getAgName());
     }
 
     public void init(AgentParameters ap) throws Exception {
@@ -46,8 +49,14 @@ public class JasonBridgeArch extends AgArch {
         insertAgArch(this);
         createCustomArchs(ap.getAgArchClasses());
 
+        // TODO: do we need this now that we have switched to slf4j?
+        /* 
         if (getTS().getSettings().verbose() >= 0)
+        {
             logger.setLevel(getTS().getSettings().logLevel());
+        }
+        */
+        
     }
 
     /*@Override
@@ -99,7 +108,7 @@ public class JasonBridgeArch extends AgArch {
                 percepts = ListTermImpl.parseList(r.getContent());
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error in perceive.", e);
+            logger.error( "Error in perceive.", e);
         }
 
         return percepts;
@@ -128,7 +137,7 @@ public class JasonBridgeArch extends AgArch {
             try {
                 m = jadeAg.receive();
                 if (m != null) {
-                    if (logger.isLoggable(Level.FINE)) logger.fine("Received message: " + m);
+                    if (logger.isDebugEnabled()) logger.debug("Received message: " + m);
 
                     if (isActionFeedback(m)) {
                         // ignore this message
@@ -163,7 +172,7 @@ public class JasonBridgeArch extends AgArch {
                     }
                 }
             } catch (Exception e) {
-                logger.log(Level.SEVERE, "Error receiving message.", e);
+                logger.error( "Error receiving message.", e);
             }
         } while (m != null);
     }
@@ -223,7 +232,7 @@ public class JasonBridgeArch extends AgArch {
 
         try {
             Term acTerm = action.getActionTerm();
-            logger.fine("doing: " + acTerm);
+            logger.debug("doing: " + acTerm);
 
             String rw  = "id"+jadeAg.incReplyWithId();
             ACLMessage m = new ACLMessage(ACLMessage.REQUEST);
@@ -234,7 +243,7 @@ public class JasonBridgeArch extends AgArch {
             myPA.put(rw, action);
             jadeAg.send(m);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error sending action " + action, e);
+            logger.error( "Error sending action " + action, e);
         }
     }
 
@@ -258,7 +267,7 @@ public class JasonBridgeArch extends AgArch {
                     environmentAID =  ans[0].getName();
                 }
             } catch (Exception e) {
-                logger.log(Level.SEVERE,"Error getting environment from DF.",e);
+                logger.error("Error getting environment from DF.",e);
             }
             consultEnv = true;
         }
@@ -276,7 +285,7 @@ public class JasonBridgeArch extends AgArch {
                     a.setResult(m.getContent().equals("ok"));
                     actionExecuted(a);
                 } else {
-                    logger.log(Level.SEVERE, "Error: received feedback for an Action that is not pending. The message is "+m);
+                    logger.error( "Error: received feedback for an Action that is not pending. The message is "+m);
                 }
             }
             return true;

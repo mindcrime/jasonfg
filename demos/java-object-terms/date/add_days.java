@@ -6,11 +6,11 @@ import jason.asSemantics.*;
 import jason.asSyntax.*;
 
 import java.util.Calendar;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
 
 public class add_days extends DefaultInternalAction {
 
-    private Logger logger = Logger.getLogger("ObjectTerm."+add_days.class.getName());
+    private Logger logger = LoggerFactory.getLogger("ObjectTerm."+add_days.class.getName());
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
@@ -27,7 +27,7 @@ public class add_days extends DefaultInternalAction {
             // unify the result
             return un.unifies(args[2], new ObjectTermImpl(c));
         } catch (Exception e) {
-            logger.warning("Error in internal action 'date.add_days'! "+e);
+            logger.warn("Error in internal action 'date.add_days'! "+e);
         }
         return false;
     }

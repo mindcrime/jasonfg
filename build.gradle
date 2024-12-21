@@ -6,6 +6,34 @@ apply plugin: 'java-library'
 
 defaultTasks 'config'
 
+
+java {
+	toolchain {
+	  languageVersion = JavaLanguageVersion.of(17)
+	}
+ }
+ 
+ repositories {
+	 mavenCentral()
+	 maven { url "https://raw.githubusercontent.com/jacamo-lang/mvn-repo/master" }
+	 maven { url "https://jade.tilab.com/maven/" }
+ }
+ 
+ 
+ 
+dependencies {
+	// Configuration Name + Dependency Notation - GroupID : ArtifactID (Name) : Version
+	// configuration('<group>:<name>:<version>')
+	
+	// https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+	implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.16'
+	
+		
+}
+
+
+
+
 clean {
     delete 'bin'
     delete 'doc/api'

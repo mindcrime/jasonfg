@@ -8,7 +8,7 @@ public class LifeModel extends GridWorldModel {
 
     public static final int LIFE  = 16; // represent a cell with life
 
-    //private Logger logger = Logger.getLogger(LifeModel.class.getName());
+    //private Logger logger = LoggerFactory.getLogger(LifeModel.class.getName());
 
     Random random = new Random();
 

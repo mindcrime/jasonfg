@@ -8,7 +8,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.management.NotificationBroadcasterSupport;
 
@@ -34,7 +35,7 @@ public abstract class BaseLocalMAS extends NotificationBroadcasterSupport {
     public final static String       stopMASFileName = ".stop___MAS";
     public final static String       defaultProjectFileName = "default.mas2j";
 
-    protected static Logger             logger        = Logger.getLogger(BaseLocalMAS.class.getName());
+    protected static Logger             logger        = LoggerFactory.getLogger(BaseLocalMAS.class.getName());
     protected static BaseLocalMAS runner        = null;
     protected static boolean            appFromClassPath = false;
     protected static MAS2JProject       project;

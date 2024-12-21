@@ -1,6 +1,6 @@
 package jia;
 
-import java.util.logging.Level;
+
 
 import env.WorldModel;
 
@@ -21,7 +21,7 @@ public class obstacle extends DefaultInternalAction {
             int y = (int)((NumberTerm)terms[1]).solve();
             return !model.inGrid(x,y) || model.hasObject(WorldModel.OBSTACLE, x, y);
         } catch (Throwable e) {
-            ts.getLogger().log(Level.SEVERE, "jia.obstacle error: "+e, e);
+            ts.getLogger().error( "jia.obstacle error: "+e, e);
         }
         return false;
     }

@@ -1,4 +1,4 @@
-import java.util.logging.Logger;
+import org.slf4j.Logger;
 
 import jaca.CartagoEnvironment;
 import jason.asSyntax.Literal;
@@ -8,7 +8,7 @@ import jason.environment.Environment;
 
 public class MixedEnvironment extends Environment {
 
-    private Logger logger = Logger.getLogger("CartJasonEnv."+MixedEnvironment.class.getName());
+    private Logger logger = LoggerFactory.getLogger("CartJasonEnv."+MixedEnvironment.class.getName());
 
     private CartagoEnvironment cartagoEnv;
 

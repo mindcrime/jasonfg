@@ -3,8 +3,9 @@ package jason.bb;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jason.asSemantics.Agent;
 import jason.asSyntax.Atom;
@@ -17,7 +18,7 @@ import jason.asSyntax.Literal;
  * The file name is the agent's name + ".bb".
  */
 public class TextPersistentBB extends ChainBBAdapter {
-    private static Logger logger = Logger.getLogger(TextPersistentBB.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(TextPersistentBB.class.getName());
 
     private File file = null;
     private Agent ag  = null;
@@ -39,7 +40,7 @@ public class TextPersistentBB extends ChainBBAdapter {
                     ag.addInitialBelsInBB();
                 }
             } catch (Exception e) {
-                logger.log(Level.SEVERE,"Error initialising TextPersistentBB.",e);
+                logger.error("Error initialising TextPersistentBB.",e);
             }
         }
     }
@@ -57,7 +58,7 @@ public class TextPersistentBB extends ChainBBAdapter {
             }
             out.close();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error writing BB in file " + file, e);
+            logger.error( "Error writing BB in file " + file, e);
         }
         nextBB.stop();
     }

@@ -9,15 +9,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Implementation of the <code>namespace</code> directive. */
 public class NameSpace implements Directive {
 
     public static final String LOCAL_PREFIX = "#";
 
-    static Logger logger = Logger.getLogger(NameSpace.class.getName());
+    static Logger logger = LoggerFactory.getLogger(NameSpace.class.getName());
 
     private Map<Atom,Atom> localNSs = new HashMap<Atom,Atom>();
 
@@ -36,23 +37,23 @@ public class NameSpace implements Directive {
     @Override
     public void begin(Pred directive, as2j parser) {
         if (! directive.getTerm(0).isAtom()) {
-            logger.log(Level.SEVERE, "The first parameter of the directive namespace should be an atom and not "+directive.getTerm(0));
+            logger.error( "The first parameter of the directive namespace should be an atom and not "+directive.getTerm(0));
             return;
         }
         Atom ns = new Atom( ((Atom)directive.getTerm(0)).getFunctor() );
 
         if (directive.getArity() > 1) {
             if (! directive.getTerm(1).isAtom()) {
-                logger.log(Level.SEVERE, "The second parameter of the directive namespace should be an atom and not "+directive.getTerm(1));
+                logger.error( "The second parameter of the directive namespace should be an atom and not "+directive.getTerm(1));
                 return;
             }
             String type = ((Atom)directive.getTerm(1)).getFunctor();
             if (!type.equals("local") && !type.equals("global")) {
-                logger.log(Level.SEVERE, "The second parameter of the directive namespace should be either local or global");
+                logger.error( "The second parameter of the directive namespace should be either local or global");
                 return;
             }
             if (type.equals("global") && isLocalNS(ns)) {
-                logger.warning("The namespace "+ns+" was previously defined as local, changing it to globall!");
+                logger.warn("The namespace "+ns+" was previously defined as local, changing it to globall!");
                 localNSs.remove(ns);
             }
             if (type.equals("local")) {

@@ -1,6 +1,6 @@
 package jia;
 
-import java.util.logging.Level;
+
 
 import env.*;
 import arch.MinerArch;
@@ -23,7 +23,7 @@ public class ag_pos extends DefaultInternalAction {
                        un.unifies(terms[2], new NumberTermImpl(l.y));
             }
         } catch (Throwable e) {
-            ts.getLogger().log(Level.SEVERE, "add_fatigue error: "+e, e);
+            ts.getLogger().error( "add_fatigue error: "+e, e);
         }
         return false;
     }

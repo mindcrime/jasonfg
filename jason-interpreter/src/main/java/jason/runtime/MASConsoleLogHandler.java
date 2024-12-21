@@ -2,7 +2,7 @@ package jason.runtime;
 
 
 import java.util.logging.Formatter;
-import java.util.logging.Level;
+
 import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.StreamHandler;
@@ -34,14 +34,18 @@ public class MASConsoleLogHandler extends StreamHandler  {
             }
         }
 
+        /* 
         String level = LogManager.getLogManager().getProperty(levelField);
         if (level != null) {
             try {
-                setLevel(Level.parse(level));
+                // TODO: do we still need this now that we've switched to slf4j?
+            	// setLevel(Level.parse(level));
+            	
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+        */
     }
 
     public void publish(LogRecord l) {

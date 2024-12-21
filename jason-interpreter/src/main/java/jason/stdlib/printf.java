@@ -1,6 +1,6 @@
 package jason.stdlib;
 
-import java.util.logging.Level;
+
 
 import jason.JasonException;
 import jason.NoValueException;
@@ -83,9 +83,10 @@ public class printf extends println {
             }
         }
         String sout = String.format( ((StringTerm)args[0]).getString(), javaArgs);
-
-        if (ts != null && ts.getSettings().logLevel() != Level.WARNING) {
-            ts.getLogger().info(sout.toString());
+        
+        // if (ts != null && ts.getSettings().logLevel() != Level.WARNING) {
+        if( ts != null ) {
+            ts.getLogger().warn(sout.toString());
         } else {
             System.out.print(sout.toString() + getNewLine());
         }

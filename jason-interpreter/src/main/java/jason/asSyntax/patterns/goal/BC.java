@@ -8,8 +8,9 @@ import jason.asSyntax.directives.DefaultDirective;
 import jason.asSyntax.directives.Directive;
 import jason.asSyntax.directives.DirectiveProcessor;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of the Blind Commitment pattern (see DALT 2006 paper)
@@ -18,7 +19,7 @@ import java.util.logging.Logger;
  */
 public class BC extends DefaultDirective implements Directive {
 
-    static Logger logger = Logger.getLogger(BC.class.getName());
+    static Logger logger = LoggerFactory.getLogger(BC.class.getName());
 
     @Override
     public Agent process(Pred directive, Agent outerContent, Agent innerContent) {
@@ -44,7 +45,7 @@ public class BC extends DefaultDirective implements Directive {
                 return newAg;
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Directive error.", e);
+            logger.error("Directive error.", e);
         }
         return null;
     }

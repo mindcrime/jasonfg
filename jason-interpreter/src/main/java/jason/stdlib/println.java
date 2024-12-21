@@ -7,7 +7,7 @@ import jason.asSemantics.Unifier;
 import jason.asSyntax.StringTerm;
 import jason.asSyntax.Term;
 
-import java.util.logging.Level;
+
 
 
 /**
@@ -58,8 +58,9 @@ public class println extends DefaultInternalAction {
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         String sout = argsToString(args);
 
-        if (ts != null && ts.getSettings().logLevel() != Level.WARNING) {
-            ts.getLogger().info(sout.toString());
+        // if (ts != null && ts.getSettings().logLevel() != Level.WARNING) {
+        if( ts != null ) {
+            ts.getLogger().warn(sout.toString());
         } else {
             System.out.print(sout.toString() + getNewLine());
         }

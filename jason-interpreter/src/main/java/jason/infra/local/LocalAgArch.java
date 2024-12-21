@@ -11,8 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jason.JasonException;
 import jason.ReceiverNotFoundException;
@@ -58,7 +59,7 @@ public class LocalAgArch extends AgArch implements Runnable, Serializable {
     private String             agName  = "";
     private volatile boolean   running = true;
     private Queue<Message>     mbox    = new ConcurrentLinkedQueue<>();
-    protected transient Logger logger  = Logger.getLogger(LocalAgArch.class.getName());
+    protected transient Logger logger  = LoggerFactory.getLogger(LocalAgArch.class.getName());
 
     private static List<MsgListener> msgListeners = null;
     public static void addMsgListener(MsgListener l) {
@@ -142,9 +143,13 @@ public class LocalAgArch extends AgArch implements Runnable, Serializable {
 
 
     public void setLogger() {
-        logger = Logger.getLogger(LocalAgArch.class.getName() + "." + getAgName());
-        if (getTS().getSettings().verbose() >= 0)
+        logger = LoggerFactory.getLogger(LocalAgArch.class.getName() + "." + getAgName());
+        
+        /* 
+        if (getTS().getSettings().verbose() >= 0) {
             logger.setLevel(getTS().getSettings().logLevel());
+        }
+        */
     }
 
     public Logger getLogger() {
@@ -263,7 +268,7 @@ public class LocalAgArch extends AgArch implements Runnable, Serializable {
                 boolean isBreakPoint = false;
                 try {
                     isBreakPoint = ts.getC().getSelectedOption().getPlan().hasBreakpoint();
-                    if (logger.isLoggable(Level.FINE)) logger.fine("Informing controller that I finished a reasoning cycle "+getCycleNumber()+". Breakpoint is " + isBreakPoint);
+                    if (logger.isDebugEnabled()) logger.debug("Informing controller that I finished a reasoning cycle "+getCycleNumber()+". Breakpoint is " + isBreakPoint);
                 } catch (NullPointerException e) {
                     // no problem, there is no sel opt, no plan ....
                 }
@@ -275,7 +280,7 @@ public class LocalAgArch extends AgArch implements Runnable, Serializable {
                     sleep();
             }
         }
-        logger.fine("I finished!");
+        logger.debug("I finished!");
     }
 
     private transient Object sleepSync = new Object();
@@ -286,7 +291,7 @@ public class LocalAgArch extends AgArch implements Runnable, Serializable {
     public void sleep() {
         try {
             if (!getTS().getSettings().isSync()) {
-                //logger.fine("Entering in sleep mode....");
+                //logger.debug("Entering in sleep mode....");
                 synchronized (sleepSync) {
                     sleepSync.wait(sleepTime); // wait for messages
                     if (sleepTime < MAX_SLEEP)
@@ -295,7 +300,7 @@ public class LocalAgArch extends AgArch implements Runnable, Serializable {
             }
         } catch (InterruptedException e) {
         } catch (Exception e) {
-            logger.log(Level.WARNING,"Error in sleep.", e);
+            logger.warn("Error in sleep.", e);
         }
     }
 
@@ -328,7 +333,7 @@ public class LocalAgArch extends AgArch implements Runnable, Serializable {
         super.perceive();
         if (infraEnv == null) return null;
         Collection<Literal> percepts = infraEnv.getUserEnvironment().getPercepts(getAgName());
-        if (logger.isLoggable(Level.FINE) && percepts != null) logger.fine("percepts: " + percepts);
+        if (logger.isDebugEnabled() && percepts != null) logger.debug("percepts: " + percepts);
         return percepts;
     }
 
@@ -374,7 +379,7 @@ public class LocalAgArch extends AgArch implements Runnable, Serializable {
         Message im = mbox.poll();
         while (im != null) {
             C.addMsg(im);
-            if (logger.isLoggable(Level.FINE)) logger.fine("received message: " + im);
+            if (logger.isDebugEnabled()) logger.debug("received message: " + im);
             im = mbox.poll();
         }
     }
@@ -386,7 +391,7 @@ public class LocalAgArch extends AgArch implements Runnable, Serializable {
     /** called by the TS to ask the execution of an action in the environment */
     @Override
     public void act(ActionExec action) {
-        //if (logger.isLoggable(Level.FINE)) logger.fine("doing: " + action.getActionTerm());
+        //if (logger.isDebugEnabled()) logger.debug("doing: " + action.getActionTerm());
 
         if (isRunning()) {
             if (infraEnv != null) {
@@ -419,7 +424,7 @@ public class LocalAgArch extends AgArch implements Runnable, Serializable {
             }
         } catch (InterruptedException e) {
         } catch (Exception e) {
-            logger.log(Level.WARNING,"Error waiting sync (1)", e);
+            logger.warn("Error waiting sync (1)", e);
         }
     }
 
@@ -438,7 +443,7 @@ public class LocalAgArch extends AgArch implements Runnable, Serializable {
             }
         } catch (InterruptedException e) {
         } catch (Exception e) {
-            logger.log(Level.WARNING,"Error waiting sync (2)", e);
+            logger.warn("Error waiting sync (2)", e);
         }
     }
 

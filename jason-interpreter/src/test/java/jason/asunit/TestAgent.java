@@ -3,7 +3,7 @@ package jason.asunit;
 import static org.junit.Assert.fail;
 
 import java.io.StringReader;
-import java.util.logging.Level;
+
 
 import jason.JasonException;
 import jason.RevisionFailedException;
@@ -46,7 +46,7 @@ public class TestAgent extends Agent {
             arch.insertAgArch(arch);
             initAg();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error creating TestArch", e);
+            logger.error( "Error creating TestArch", e);
         }
     }
 
@@ -60,14 +60,14 @@ public class TestAgent extends Agent {
             // kqml Plans at the end of the ag PS
             setASLSrc("kqmlPlans.asl");
             if (JasonException.class.getResource("/asl/kqmlPlans.asl") == null)
-                logger.warning("kqmlPlans not found!");
+                logger.warn("kqmlPlans not found!");
             else
                 parseAS(JasonException.class.getResource("/asl/kqmlPlans.asl"));
             setASLSrc("stringcode");
             addInitialBelsInBB();
             return true;
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error parsing\n"+aslCode+": "+e.getMessage());
+            logger.error( "Error parsing\n"+aslCode+": "+e.getMessage());
             return false;
         }
     }
@@ -77,12 +77,19 @@ public class TestAgent extends Agent {
     }
 
     public void setDebugMode(boolean on) {
-        if (on) {
+        
+    	// TODO: do we need this now that we've switched to slf4j?
+    	
+    	/* 
+    	if (on) {
             getTS().getLogger().setLevel(Level.FINE);
             getArch().getLogger().setLevel(Level.FINE);
             getTS().getAg().getLogger().setLevel(Level.FINE);
         } else
             getTS().getLogger().setLevel(Level.INFO);
+    
+    	*/
+    	
     }
 
     public void clearExecutionTrace() {

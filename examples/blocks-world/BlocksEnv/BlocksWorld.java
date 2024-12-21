@@ -5,12 +5,12 @@ import jason.asSyntax.Structure;
 
 import java.util.LinkedList;
 import java.util.Stack;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
 
 public class BlocksWorld extends jason.environment.Environment {
 
-    private Logger logger = Logger.getLogger("BlocksWorld.mas2j" + BlocksWorld.class.getName());
+    private Logger logger = LoggerFactory.getLogger("BlocksWorld.mas2j" + BlocksWorld.class.getName());
 
     WorldModel  model;
     WorldView   view;
@@ -52,7 +52,7 @@ public class BlocksWorld extends jason.environment.Environment {
             return true;
         } catch (InterruptedException e) {
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "error executing " + action + " for " + ag, e);
+            logger.error( "error executing " + action + " for " + ag, e);
         }
         return false;
     }
@@ -88,7 +88,7 @@ public class BlocksWorld extends jason.environment.Environment {
             }
             informAgsEnvironmentChanged();
         } catch (Exception e) {
-            logger.warning("Error creating world "+e);
+            logger.warn("Error creating world "+e);
         }
     }
 }

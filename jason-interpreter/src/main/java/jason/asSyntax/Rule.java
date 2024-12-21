@@ -3,8 +3,9 @@ package jason.asSyntax;
 import jason.asSemantics.Unifier;
 
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -17,7 +18,7 @@ import org.w3c.dom.Element;
 public class Rule extends LiteralImpl {
 
     private static final long serialVersionUID = 1L;
-    private static Logger logger = Logger.getLogger(Rule.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(Rule.class.getName());
 
     private LogicalFormula body   = null;
 
@@ -26,11 +27,11 @@ public class Rule extends LiteralImpl {
     public Rule(Literal head, LogicalFormula body) {
         super(head);
         if (head.isRule()) {
-            logger.log(Level.SEVERE,"The rule head ("+head+") is a rule!", new Exception());
+            logger.error("The rule head ("+head+") is a rule!", new Exception());
         } else if (isInternalAction()) {
-            logger.log(Level.SEVERE,"The rule head ("+head+") can not be an internal action!", new Exception());
+            logger.error("The rule head ("+head+") can not be an internal action!", new Exception());
         } else if (head == LTrue || head == LFalse) {
-            logger.log(Level.SEVERE,"The rule head ("+head+") can not be a true or false!", new Exception());
+            logger.error("The rule head ("+head+") can not be a true or false!", new Exception());
         }
         this.body = body;
     }

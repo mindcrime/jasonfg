@@ -5,7 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
+
 
 import jason.JasonException;
 import jason.asSemantics.Agent;
@@ -245,7 +245,7 @@ public class wait extends DefaultInternalAction {
                             }
                         }
                     } catch (Exception e) {
-                        ts.getLogger().log(Level.SEVERE, "Error at .wait thread", e);
+                        ts.getLogger().error( "Error at .wait thread", e);
                     }
             });
             ts.getAgArch().wakeUpDeliberate();

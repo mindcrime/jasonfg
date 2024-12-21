@@ -11,8 +11,9 @@ import jason.runtime.RuntimeServices;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.w3c.dom.Document;
 
@@ -29,7 +30,7 @@ public class JadeExecutionControl extends JadeAg implements ExecutionControlInfr
 
     @Override
     public void setup()  {
-        logger = Logger.getLogger(JadeExecutionControl.class.getName());
+        logger = LoggerFactory.getLogger(JadeExecutionControl.class.getName());
 
         // create the user environment
         try {
@@ -44,16 +45,16 @@ public class JadeExecutionControl extends JadeAg implements ExecutionControlInfr
                     userControl = (ExecutionControl) Class.forName(args[0].toString()).getConstructor().newInstance();
                     userControl.setExecutionControlInfraTier(this);
                     if (args.length > 1) {
-                        logger.warning("Execution control arguments is not implemented yet (ask it to us if you need)!");
+                        logger.warn("Execution control arguments is not implemented yet (ask it to us if you need)!");
                     }
                 }
             } else {
-                logger.warning("Using default execution control.");
+                logger.warn("Using default execution control.");
                 userControl = new ExecutionControl();
                 userControl.setExecutionControlInfraTier(this);
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error in setup Jade Environment", e);
+            logger.error( "Error in setup Jade Environment", e);
         }
 
         executor = Executors.newFixedThreadPool(5);
@@ -84,7 +85,7 @@ public class JadeExecutionControl extends JadeAg implements ExecutionControlInfr
                             // check if the message is an agent state
                             @SuppressWarnings("unused")
                             Document o = (Document)m.getContentObject();
-                            logger.warning("Received agState too late! in-reply-to:"+m.getInReplyTo());
+                            logger.warn("Received agState too late! in-reply-to:"+m.getInReplyTo());
                         } catch (Exception ex0) {
                             try {
                                 // check if the message is an end of cycle from some agent
@@ -99,13 +100,13 @@ public class JadeExecutionControl extends JadeAg implements ExecutionControlInfr
                                             try {
                                                 userControl.receiveFinishedCycle(sender, breakpoint, cycle);
                                             } catch (Exception e) {
-                                                logger.log(Level.SEVERE, "Error processing end of cycle.", e);
+                                                logger.error( "Error processing end of cycle.", e);
                                             }
                                         }
                                     });
                                 }
                             } catch (Exception e) {
-                                logger.log(Level.SEVERE, "Error in processing "+m, e);
+                                logger.error( "Error in processing "+m, e);
                             }
                         }
                     }
@@ -113,7 +114,7 @@ public class JadeExecutionControl extends JadeAg implements ExecutionControlInfr
             });
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error starting agent", e);
+            logger.error( "Error starting agent", e);
         }
     }
 
@@ -143,7 +144,7 @@ public class JadeExecutionControl extends JadeAg implements ExecutionControlInfr
         addBehaviour(new OneShotBehaviour() {
             public void action() {
                 try {
-                    logger.fine("Sending performCycle "+cycle+" to all agents.");
+                    logger.debug("Sending performCycle "+cycle+" to all agents.");
                     ACLMessage m = new ACLMessage(ACLMessage.INFORM);
                     m.setOntology(controllerOntology);
                     addAllAgsAsReceivers(m);
@@ -151,7 +152,7 @@ public class JadeExecutionControl extends JadeAg implements ExecutionControlInfr
                     m.addUserDefinedParameter("cycle", String.valueOf(cycle));
                     send(m);
                 } catch (Exception e) {
-                    logger.log(Level.SEVERE, "Error in informAllAgsToPerformCycle", e);
+                    logger.error( "Error in informAllAgsToPerformCycle", e);
                 }
             }
         });
@@ -175,7 +176,7 @@ public class JadeExecutionControl extends JadeAg implements ExecutionControlInfr
                         state = (Document) r.getContentObject();
                     }
                 } catch (Exception e) {
-                    logger.log(Level.SEVERE, "Error in getAgState", e);
+                    logger.error( "Error in getAgState", e);
                 } finally {
                     synchronized (syncWaitState) {
                         syncWaitState.notifyAll();

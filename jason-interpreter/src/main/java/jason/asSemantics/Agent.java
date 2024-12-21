@@ -1,10 +1,50 @@
 package jason.asSemantics;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.Serial;
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
 import jason.JasonException;
 import jason.RevisionFailedException;
 import jason.architecture.AgArch;
 import jason.architecture.MindInspectorWeb;
-import jason.asSyntax.*;
+import jason.asSyntax.ASSyntax;
+import jason.asSyntax.ArithFunctionTerm;
+import jason.asSyntax.InternalActionLiteral;
+import jason.asSyntax.Literal;
+import jason.asSyntax.LogicalFormula;
+import jason.asSyntax.Plan;
+import jason.asSyntax.Rule;
+import jason.asSyntax.Term;
+import jason.asSyntax.Trigger;
 import jason.asSyntax.Trigger.TEOperator;
 import jason.asSyntax.Trigger.TEType;
 import jason.asSyntax.directives.FunctionRegister;
@@ -21,22 +61,6 @@ import jason.runtime.Settings;
 import jason.runtime.SourcePath;
 import jason.util.Config;
 import jason.util.ToDOM;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 
@@ -70,8 +94,8 @@ public class Agent implements Serializable, ToDOM {
     //private QueryCacheSimple qCache = null;
     //private QueryProfiling   qProfiling = null;
 
-    protected transient Logger logger = Logger.getLogger(Agent.class.getName());
-
+    protected transient Logger logger = LoggerFactory.getLogger(Agent.class.getName());
+    
     public Agent() {
         checkCustomSelectOption();
     }
@@ -197,7 +221,7 @@ public class Agent implements Serializable, ToDOM {
                 if (JasonException.class.getResource(file) != null) {
                     parseAS(JasonException.class.getResource(file), PlanLibrary.KQML_PLANS_FILE); // the kqmlPlans.asl argument should be used here (see hasUserKqmlReceived in PlanLibrary)
                 } else {
-                    logger.warning("The kqmlPlans.asl was not found!");
+                    logger.warn("The kqmlPlans.asl was not found!");
                 }
             }
         } else {
@@ -205,7 +229,7 @@ public class Agent implements Serializable, ToDOM {
             try {
                 parseAS(new File(c.getKqmlPlansFile()));
             } catch (Exception e) {
-                logger.warning("Error reading kqml semantic plans. "+e+". from file "+c.getKqmlPlansFile());
+                logger.warn("Error reading kqml semantic plans. "+e+". from file "+c.getKqmlPlansFile());
             }
         }
     }
@@ -250,10 +274,10 @@ public class Agent implements Serializable, ToDOM {
         try {
             a = this.getClass().getConstructor().newInstance();
         } catch (InstantiationException e1) {
-            logger.severe(" cannot create derived class" + e1);
+            logger.error(" cannot create derived class" + e1);
             return null;
         } catch (Exception e2) {
-            logger.severe(" cannot create derived class" + e2);
+            logger.error(" cannot create derived class" + e2);
             return null;
         }
         return cloneInto(arch, a);
@@ -262,8 +286,12 @@ public class Agent implements Serializable, ToDOM {
     public Agent cloneInto(AgArch arch, Agent a) {
         a.setLogger(arch);
         if (this.getTS().getSettings().verbose() >= 0)
-            a.logger.setLevel(this.getTS().getSettings().logLevel());
+        	this.getTS().getSettings().logLevel();
+        	
+        // TODO: do we need this at all for slf4j?
+        // a.logger.setLevel(this.getTS().getSettings().logLevel());
 
+        
         synchronized (getBB().getLock()) {
             a.bb = this.bb.clone();
         }
@@ -324,7 +352,7 @@ public class Agent implements Serializable, ToDOM {
 
     public void setLogger(AgArch arch) {
         if (arch != null)
-            logger = Logger.getLogger(Agent.class.getName() + "." + arch.getAgName());
+            logger = LoggerFactory.getLogger(Agent.class.getName() + "." + arch.getAgName());
     }
 
     public Logger getLogger() {
@@ -362,13 +390,13 @@ public class Agent implements Serializable, ToDOM {
     }
     public void parseAS(URL asURL, String sourceId) throws Exception {
         parseAS(asURL.openStream(), sourceId);
-        logger.fine("as2j: AgentSpeak program '" + asURL + "' parsed successfully!");
+        logger.debug("as2j: AgentSpeak program '" + asURL + "' parsed successfully!");
     }
 
     /** Adds beliefs and plans form a file */
     public void parseAS(File asFile) throws Exception {
         parseAS(new FileInputStream(asFile), asFile.getName());
-        logger.fine("as2j: AgentSpeak program '" + asFile + "' parsed successfully!");
+        logger.debug("as2j: AgentSpeak program '" + asFile + "' parsed successfully!");
     }
 
     public void parseAS(InputStream asIn, String sourceId) throws ParseException, JasonException {
@@ -424,11 +452,11 @@ public class Agent implements Serializable, ToDOM {
             if (user)
                 error = FunctionRegister.checkFunctionName(af.getName());
             if (error != null)
-                logger.warning(error);
+                logger.warn(error);
             else
                 functions.put(af.getName(),af);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error registering function "+c.getName(),e);
+            logger.error("Error registering function " + c.getName(), e);
         }
     }
 
@@ -437,11 +465,11 @@ public class Agent implements Serializable, ToDOM {
         try {
             String error = FunctionRegister.checkFunctionName(function);
             if (error != null)
-                logger.warning(error);
+                logger.warn(error);
             else
                 functions.put(function, new RuleToFunction(literal, arity));
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error registering function "+literal,e);
+            logger.error( "Error registering function " + literal, e);
         }
     }
 
@@ -486,7 +514,7 @@ public class Agent implements Serializable, ToDOM {
                 for (Term t: ASSyntax.parseList("["+sBels+"]"))
                     addInitBel( ((Literal)t).forceFullLiteralImpl());
             } catch (Exception e) {
-                logger.log(Level.WARNING, "Initial beliefs from project '["+sBels+"]' is not a list of literals.");
+                logger.warn("Initial beliefs from project '["+sBels+"]' is not a list of literals.");
             }
     }
 
@@ -539,7 +567,7 @@ public class Agent implements Serializable, ToDOM {
                     getTS().getC().addAchvGoal(g,Intention.EmptyInt);
                 }
             } catch (Exception e) {
-                logger.log(Level.WARNING, "Initial goals from project '["+sGoals+"]' is not a list of literals.");
+                logger.warn( "Initial goals from project '["+sGoals+"]' is not a list of literals.");
             }
         }
     }
@@ -644,7 +672,10 @@ public class Agent implements Serializable, ToDOM {
         this.ts = ts;
         setLogger(ts.getAgArch());
         if (ts.getSettings().verbose() >= 0)
-            logger.setLevel(ts.getSettings().logLevel());
+        {    
+        	// TODO: : do we need this at all for slf4j?
+        	// logger.setLevel(ts.getSettings().logLevel());
+        }
     }
 
     public TransitionSystem getTS() {
@@ -779,7 +810,7 @@ public class Agent implements Serializable, ToDOM {
                     ts.updateEvents(new Event(new Trigger(TEOperator.add, TEType.belief, lp), Intention.EmptyInt));
                 }
             } catch (Exception e) {
-                logger.log(Level.SEVERE, "Error adding percetion " + lw.getLiteral(), e);
+                logger.error( "Error adding percetion " + lw.getLiteral(), e);
             }
         }
 
@@ -812,7 +843,7 @@ public class Agent implements Serializable, ToDOM {
                 return true;
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "** Error in method believes("+bel+","+un+").",e);
+            logger.error( "** Error in method believes("+bel+","+un+").",e);
         }
         return false;
     }
@@ -879,13 +910,13 @@ public class Agent implements Serializable, ToDOM {
         synchronized (bb.getLock()) {
             try {
                 if (beliefToAdd != null) {
-                    if (logger.isLoggable(Level.FINE)) logger.fine("Doing (add) brf for " + beliefToAdd);
+                    if (logger.isDebugEnabled() ) { logger.debug("Doing (add) brf for " + beliefToAdd); }
 
                     if (getBB().add(position, beliefToAdd)) {
                         result = new List[2];
                         result[0] = Collections.singletonList(beliefToAdd);
                         result[1] = Collections.emptyList();
-                        if (logger.isLoggable(Level.FINE)) logger.fine("brf added " + beliefToAdd);
+                        if (logger.isDebugEnabled() ) { logger.debug("brf added " + beliefToAdd); }
                     }
                 }
 
@@ -897,7 +928,7 @@ public class Agent implements Serializable, ToDOM {
                         u = new Unifier();
                     }
 
-                    if (logger.isLoggable(Level.FINE)) logger.fine("Doing (del) brf for " + beliefToDel + " in BB=" + believes(beliefToDel, u));
+                    if (logger.isDebugEnabled() ) { logger.debug("Doing (del) brf for " + beliefToDel + " in BB=" + believes(beliefToDel, u)); }
 
                     boolean removed = getBB().remove(beliefToDel);
                     if (!removed && !beliefToDel.isGround()) { // then try to unify the parameter with a belief in BB
@@ -919,7 +950,7 @@ public class Agent implements Serializable, ToDOM {
                     }
 
                     if (removed) {
-                        if (logger.isLoggable(Level.FINE)) logger.fine("Removed:" + beliefToDel);
+                        if (logger.isDebugEnabled() ) { logger.debug("Removed:" + beliefToDel); }
                         if (result == null) {
                             result = new List[2];
                             result[0] = Collections.emptyList();
@@ -928,7 +959,7 @@ public class Agent implements Serializable, ToDOM {
                     }
                 }
             } catch (Exception e) {
-                logger.log(Level.WARNING, "Error at BRF.",e);
+                logger.warn( "Error at BRF.",e);
             }
         }
         return result;
@@ -1017,7 +1048,7 @@ public class Agent implements Serializable, ToDOM {
             try {
                 builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             } catch (Exception e) {
-                logger.log(Level.SEVERE, "Error creating XML builder\n");
+                logger.error( "Error creating XML builder\n");
                 return null;
             }
         }
@@ -1066,7 +1097,7 @@ public class Agent implements Serializable, ToDOM {
             try {
                 builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             } catch (Exception e) {
-                logger.log(Level.SEVERE, "Error creating XML builder\n");
+                logger.error( "Error creating XML builder\n");
                 return null;
             }
         }
@@ -1125,7 +1156,7 @@ public class Agent implements Serializable, ToDOM {
             initAg(asSrc);
             return ts;
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error creating the agent class!", e);
+            logger.error( "Error creating the agent class!", e);
             throw new JasonException("Error creating the agent class! - " + e);
         }
     }

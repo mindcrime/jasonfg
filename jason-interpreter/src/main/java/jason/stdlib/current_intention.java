@@ -112,7 +112,7 @@ public class current_intention extends DefaultInternalAction {
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         checkArguments(args);
-        ts.getLogger().warning(".current_intention( intention(I,S) ) was replaced by .intention(I,_,S,current)");
+        ts.getLogger().warn(".current_intention( intention(I,S) ) was replaced by .intention(I,_,S,current)");
 
         // try to get the intention from the "body"
         Intention i = ts.getC().getSelectedIntention();

@@ -3,7 +3,7 @@ package jason.asSemantics;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
+
 
 import jason.JasonException;
 import jason.asSyntax.ASSyntax;
@@ -143,7 +143,7 @@ public abstract class ConcurrentInternalAction implements InternalAction {
                             C.resumeIntention(pi, new Atom("resume_from_concurrent_internal_action")); // add it back in I
                         }
                     } catch (JasonException e) {
-                        ts.getLogger().log(Level.SEVERE, "Error resuming intention", e);
+                        ts.getLogger().error( "Error resuming intention", e);
                     }
                 }
         });

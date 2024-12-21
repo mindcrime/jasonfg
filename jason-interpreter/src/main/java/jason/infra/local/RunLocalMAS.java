@@ -1,11 +1,56 @@
 package jason.infra.local;
 
+import java.awt.FlowLayout;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serial;
+import java.lang.management.ManagementFactory;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.ServerSocket;
+import java.net.URL;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.server.ExportException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.Vector;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import javax.management.ObjectName;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+// import java.util.logging.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import jason.JasonException;
 import jason.architecture.AgArch;
 import jason.architecture.MindInspectorWeb;
 import jason.asSemantics.Agent;
 import jason.asSyntax.NumberTermImpl;
-import jason.pl.PlanLibrary;
 import jason.asSyntax.Trigger;
 import jason.asSyntax.directives.DirectiveProcessor;
 import jason.asSyntax.directives.Include;
@@ -16,37 +61,20 @@ import jason.mas2j.AgentParameters;
 import jason.mas2j.ClassParameters;
 import jason.mas2j.MAS2JProject;
 import jason.mas2j.parser.ParseException;
-import jason.runtime.*;
+import jason.pl.PlanLibrary;
+import jason.runtime.MASConsoleGUI;
+import jason.runtime.RuntimeServices;
+import jason.runtime.RuntimeServicesFactory;
+import jason.runtime.Settings;
+import jason.runtime.SourcePath;
 import jason.util.Config;
-
-import javax.management.ObjectName;
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.awt.*;
-import java.io.*;
-import java.lang.management.ManagementFactory;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.ServerSocket;
-import java.net.URL;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.server.ExportException;
-import java.rmi.server.UnicastRemoteObject;
-import java.util.List;
-import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.*;
 
 /**
  * Runs MASProject using *Local* infrastructure.
  */
 public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
 
-    protected static Logger logger = Logger.getLogger(RunLocalMAS.class.getName());
+    protected static Logger logger = LoggerFactory.getLogger(RunLocalMAS.class.getName());
 
     private JButton  btDebug;
     protected boolean  isRunning = false;
@@ -143,22 +171,28 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
             Config.get().fix();
         }
 
-        setupLogger((String) initArgs.get("log-conf"));
+        // no longer used since we're using slf4j
+        // setupLogger((String) initArgs.get("log-conf"));
 
         if ((boolean)(initArgs.getOrDefault("debug", false))) {
             debug = true;
-            Logger.getLogger("").setLevel(Level.FINE);
+            
+            // TODO: do we need this now that we've switched to slf4j?
+            // LoggerFactory.getLogger("").setLevel(Level.FINE);
         }
 
         // discover the handler
-        for (Handler h : Logger.getLogger("").getHandlers()) {
+        // we don't do all this now, since switching to slf4j
+        /* 
+        for (Handler h : LoggerFactory.getLogger("").getHandlers()) {
             // if there is a MASConsoleLogHandler, show it
             if (h.getClass().toString().equals(MASConsoleLogHandler.class.toString())) {
                 MASConsoleGUI.get().getFrame().setVisible(true);
                 MASConsoleGUI.get().setAsDefaultOut();
             }
         }
-
+		*/
+        
         int errorCode = 0;
 
         try {
@@ -206,13 +240,13 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
             errorCode = 0;
 
         } catch (FileNotFoundException e1) {
-            logger.log(Level.SEVERE, "File " + projectFileName + " not found!");
+            logger.error( "File " + projectFileName + " not found!");
             errorCode = 2;
         } catch (ParseException e) {
-            logger.log(Level.SEVERE, "Error parsing file " + projectFileName + "!", e);
+            logger.error( "Error parsing file " + projectFileName + "!", e);
             errorCode = 3;
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error!?: ", e);
+            logger.error( "Error!?: ", e);
             errorCode = 4;
         }
 
@@ -342,30 +376,31 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
     }
 
     public void setupLogger() {
-        setupLogger(null);
+        // setupLogger(null);
     }
 
+    /* 
     public synchronized void setupLogger(String confFile) {
         if (appFromClassPath) {
             try {
                 LogManager.getLogManager().readConfiguration(
                         RunLocalMAS.class.getResource("/"+logPropFile).openStream());
             } catch (Exception e) {
-                Handler[] hs = Logger.getLogger("").getHandlers();
+                Handler[] hs = LoggerFactory.getLogger("").getHandlers();
                 for (Handler handler : hs) {
-                    Logger.getLogger("").removeHandler(handler);
+                    LoggerFactory.getLogger("").removeHandler(handler);
                 }
                 Handler h = new MASConsoleLogHandler();
                 h.setFormatter(new MASConsoleLogFormatter());
-                Logger.getLogger("").addHandler(h);
-                Logger.getLogger("").setLevel(Level.INFO);
+                LoggerFactory.getLogger("").addHandler(h);
+                LoggerFactory.getLogger("").setLevel(Level.INFO);
             }
         } else if (confFile != null && (confFile.startsWith("jar:") || confFile.startsWith("$"))) {
             try {
                 confFile = new SourcePath().fixPath(confFile);
                 URL logurl = new URL(confFile);
                 LogManager.getLogManager().readConfiguration( logurl.openStream() );
-                logger.fine("logging configuration was loaded from "+logurl);
+                logger.debug("logging configuration was loaded from "+logurl);
             } catch (Exception e) {
                 System.err.println("Error setting up logger:" + e);
                 e.printStackTrace();
@@ -401,21 +436,29 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
         }
     }
 
+     */
+    
+    /* 
     protected InputStream getDefaultLogProperties() throws IOException {
         return RunLocalMAS.class.getResource("/templates/" + logPropFile).openStream();
     }
-
+    */
+    
+    
+    // TODO: do we need this now that we've switched to slf4j?
+    /* 
     protected void setupDefaultConsoleLogger() {
-        Handler[] hs = Logger.getLogger("").getHandlers();
+        Handler[] hs = LoggerFactory.getLogger("").getHandlers();
         for (Handler handler : hs) {
-            Logger.getLogger("").removeHandler(handler);
+            LoggerFactory.getLogger("").removeHandler(handler);
         }
         Handler h = new ConsoleHandler();
         h.setFormatter(new MASConsoleLogFormatter());
-        Logger.getLogger("").addHandler(h);
-        Logger.getLogger("").setLevel(Level.INFO);
+        LoggerFactory.getLogger("").addHandler(h);
+        LoggerFactory.getLogger("").setLevel(Level.INFO);
     }
-
+	*/
+    
     protected void createButtons() {
         createStopButton();
 
@@ -533,7 +576,7 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
 
     protected void createEnvironment() throws JasonException {
         if (project.getEnvClass() != null && !project.getEnvClass().getClassName().equals(jason.environment.Environment.class.getName())) {
-            logger.fine("Creating environment " + project.getEnvClass());
+            logger.debug("Creating environment " + project.getEnvClass());
             env = new LocalEnvironment(project.getEnvClass(), this);
         }
     }
@@ -566,7 +609,7 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
                     numberedAg = rs.getNewAgentName(numberedAg);
 
                     ap.addArchClass(rs.getDefaultAgArchs());
-                    logger.fine("Creating agent " + numberedAg + " (" + (cAg + 1) + "/" + ap.getNbInstances() + ")");
+                    logger.debug("Creating agent " + numberedAg + " (" + (cAg + 1) + "/" + ap.getNbInstances() + ")");
 
                     RConf agentConf;
                     if (ap.getOption("rc") == null) {
@@ -627,9 +670,9 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
                     pag = agArch.getTS().getAg();
                 }
             } catch (jason.asSyntax.parser.ParseException e) {
-                logger.log(Level.SEVERE,"as2j: error parsing \"" + ap.getSource() + "\": "+e.getMessage());
+                logger.error("as2j: error parsing \"" + ap.getSource() + "\": "+e.getMessage());
             } catch (Exception e) {
-                logger.log(Level.SEVERE, "Error creating agent " + ap.name, e);
+                logger.error( "Error creating agent " + ap.name, e);
             }
         }
 
@@ -642,7 +685,7 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
             controlClass = new ClassParameters(ExecutionControlGUI.class.getName());
         }
         if (controlClass != null) {
-            logger.fine("Creating controller " + controlClass);
+            logger.debug("Creating controller " + controlClass);
             control = new LocalExecutionControl(controlClass, this);
         }
     }
@@ -772,7 +815,7 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
                 }
             }
         } catch (Exception e) {
-            logger.warning("Error getting the number of thread for the pool.");
+            logger.warn("Error getting the number of thread for the pool.");
         }
 
         // initially, add all agents in the tasks
@@ -922,13 +965,17 @@ public class RunLocalMAS extends BaseLocalMAS implements RunLocalMASMBean {
                     Settings stts = ag.getTS().getSettings();
                     stts.setVerbose(2);
                     stts.setSync(true);
+                    
+                    // TODO: do we need this now that we've switched to slf4j?
+                    /* 
                     ag.getLogger().setLevel(Level.FINE);
                     ag.getTS().getLogger().setLevel(Level.FINE);
                     ag.getTS().getAg().getLogger().setLevel(Level.FINE);
+                    */
                 }
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error entering in debug mode", e);
+            logger.error( "Error entering in debug mode", e);
         }
     }
 

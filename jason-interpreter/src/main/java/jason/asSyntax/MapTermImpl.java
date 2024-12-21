@@ -24,7 +24,7 @@ import jason.asSemantics.Unifier;
 public class MapTermImpl extends DefaultTerm implements MapTerm {
 
     private static final long serialVersionUID = 1L;
-    //private static Logger logger = Logger.getLogger(SetTermImpl.class.getName());
+    //private static Logger logger = LoggerFactory.getLogger(SetTermImpl.class.getName());
 
     private Map<Term, Term> map;
 

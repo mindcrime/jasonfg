@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
 
 import arch.LocalWorldModel;
 import busca.AEstrela;
@@ -27,7 +27,7 @@ public class Search {
 
     static final int[] defaultActions = { 1, 2, 3, 4 }; // initial order of actions
 
-    Logger logger = Logger.getLogger(Search.class.getName());
+    Logger logger = LoggerFactory.getLogger(Search.class.getName());
 
     Search(LocalWorldModel m, Location from, Location to, int[] actions, boolean considerAgentsAsObstacles) {
         this.model = m;

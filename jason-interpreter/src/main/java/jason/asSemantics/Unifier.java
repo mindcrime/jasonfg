@@ -4,8 +4,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -32,7 +33,7 @@ public class Unifier implements Cloneable, Iterable<VarTerm>, Serializable, ToDO
 
     private static final long serialVersionUID = -4975512704582790850L;
 
-    private static Logger logger = Logger.getLogger(Unifier.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(Unifier.class.getName());
 
     protected Map<VarTerm, Term> function = new HashMap<>();
 
@@ -460,7 +461,7 @@ public class Unifier implements Cloneable, Iterable<VarTerm>, Serializable, ToDO
             //newUn.compose(this);
             return newUn;
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error cloning unifier.",e);
+            logger.error( "Error cloning unifier.",e);
             return null;
         }
     }

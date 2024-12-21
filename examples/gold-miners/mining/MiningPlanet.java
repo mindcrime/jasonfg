@@ -7,12 +7,12 @@ import jason.asSyntax.Structure;
 import jason.asSyntax.Term;
 import jason.environment.grid.Location;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
 
 public class MiningPlanet extends jason.environment.Environment {
 
-    private Logger logger = Logger.getLogger("jasonTeamSimLocal.mas2j." + MiningPlanet.class.getName());
+    private Logger logger = LoggerFactory.getLogger("jasonTeamSimLocal.mas2j." + MiningPlanet.class.getName());
 
     WorldModel  model;
     WorldView   view;
@@ -94,7 +94,7 @@ public class MiningPlanet extends jason.environment.Environment {
             }
         } catch (InterruptedException e) {
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "error executing " + action + " for " + ag, e);
+            logger.error( "error executing " + action + " for " + ag, e);
         }
         return false;
     }
@@ -131,7 +131,7 @@ public class MiningPlanet extends jason.environment.Environment {
             updateAgsPercept();
             informAgsEnvironmentChanged();
         } catch (Exception e) {
-            logger.warning("Error creating world "+e);
+            logger.warn("Error creating world "+e);
         }
     }
 

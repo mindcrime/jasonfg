@@ -9,8 +9,8 @@ import jason.environment.TimeSteppedEnvironment;
 import jason.environment.grid.Location;
 
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
 
 import javax.swing.JOptionPane;
 
@@ -22,7 +22,7 @@ import javax.swing.JOptionPane;
  */
 public class MiningEnvironment extends TimeSteppedEnvironment {
 
-    private Logger          logger   = Logger.getLogger("jasonTeamSimLocal.mas2j." + MiningEnvironment.class.getName());
+    private Logger          logger   = LoggerFactory.getLogger("jasonTeamSimLocal.mas2j." + MiningEnvironment.class.getName());
 
     WorldModel              model;
     WorldView               view;
@@ -108,10 +108,10 @@ public class MiningEnvironment extends TimeSteppedEnvironment {
             } else if (action.equals(drop)) {
                 result = model.drop(agId);
             } else {
-                logger.warning("executing: " + action + ", but not implemented!");
+                logger.warn("executing: " + action + ", but not implemented!");
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "error executing " + action + " for " + ag + " (ag code:"+agId+")", e);
+            logger.error( "error executing " + action + " for " + ag + " (ag code:"+agId+")", e);
         }
         return true;
     }
@@ -123,7 +123,7 @@ public class MiningEnvironment extends TimeSteppedEnvironment {
         if (agName.startsWith(blueTeamName)) {
             return (Integer.parseInt(agName.substring(blueTeamName.length()))) + (model.agsByTeam - 1);
         }
-        logger.warning("There is no ID for agent named "+agName);
+        logger.warn("There is no ID for agent named "+agName);
         return -1;
     }
 
@@ -178,7 +178,7 @@ public class MiningEnvironment extends TimeSteppedEnvironment {
                 model = WorldFactory.worldFromContest2007("Overkill");
                 break;
             default:
-                logger.warning("Invalid index!");
+                logger.warn("Invalid index!");
                 return;
             }
 
@@ -201,7 +201,7 @@ public class MiningEnvironment extends TimeSteppedEnvironment {
                 view.setEnv(this);
             }
         } catch (Exception e) {
-            logger.warning("Error creating world "+e);
+            logger.warn("Error creating world "+e);
         }
     }
 

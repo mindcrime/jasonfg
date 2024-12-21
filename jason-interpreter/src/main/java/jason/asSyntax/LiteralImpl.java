@@ -12,7 +12,7 @@ import org.w3c.dom.Element;
 public class LiteralImpl extends Pred {
 
     private static final long serialVersionUID = 1L;
-    //private static Logger logger = Logger.getLogger(LiteralImpl.class.getName());
+    //private static Logger logger = LoggerFactory.getLogger(LiteralImpl.class.getName());
 
     private boolean type = LPos;
 

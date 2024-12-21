@@ -9,9 +9,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for the user implementation of execution control.
@@ -42,7 +42,7 @@ public class ExecutionControl {
     private Condition agFinishedCond = lock.newCondition();
     private RuntimeServices runtime;
 
-    protected static Logger logger = Logger.getLogger(ExecutionControl.class.getName());
+    protected static Logger logger = LoggerFactory.getLogger(ExecutionControl.class.getName());
 
     public ExecutionControl() {
 
@@ -63,7 +63,7 @@ public class ExecutionControl {
 
                             // update number of agents if finished by timeout
                             if (to) {
-                                if (logger.isLoggable(Level.FINE)) logger.fine("Cycle "+getCycleNumber()+" finished by timeout!");
+                                if (logger.isDebugEnabled()) logger.debug("Cycle "+getCycleNumber()+" finished by timeout!");
                                 updateNumberOfAgents();
                             }
                         } catch (Exception e) {
@@ -123,9 +123,9 @@ public class ExecutionControl {
         if (cycle == this.cycleNumber && runningCycle) { // the agent finished the current cycle
             lock.lock();
             try {
-                if (logger.isLoggable(Level.FINE)) {
-                    logger.fine("Agent "+agName+" has finished cycle "+cycle+", # of finished agents is "+(finished.size()+1)+"/"+nbAgs);
-                    if (breakpoint) logger.fine("Agent "+agName+" reached a breakpoint");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Agent "+agName+" has finished cycle "+cycle+", # of finished agents is "+(finished.size()+1)+"/"+nbAgs);
+                    if (breakpoint) logger.debug("Agent "+agName+" reached a breakpoint");
                 }
 
                 finished.add(agName);
@@ -174,7 +174,7 @@ public class ExecutionControl {
     protected void allAgsFinished() {
         startNewCycle();
         infraControl.informAllAgsToPerformCycle(cycleNumber);
-        logger.fine("starting cycle "+cycleNumber);
+        logger.debug("starting cycle "+cycleNumber);
     }
 
     public boolean isRunning() {

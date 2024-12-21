@@ -7,8 +7,9 @@ import jason.asSemantics.Unifier;
 
 import java.io.Serial;
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -27,7 +28,7 @@ public class ArithFunctionTerm extends Structure implements NumberTerm {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private static final Logger logger = Logger.getLogger(ArithFunctionTerm.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(ArithFunctionTerm.class.getName());
 
     protected NumberTerm value = null; // value, when evaluated
 
@@ -86,7 +87,7 @@ public class ArithFunctionTerm extends Structure implements NumberTerm {
     @Override
     public Term capply(Unifier u) {
         if (function == null) {
-            logger.log(Level.SEVERE, getErrorMsg()+ " -- the function can not be evaluated, it has no function assigned to it!", new Exception());
+            logger.error( getErrorMsg()+ " -- the function can not be evaluated, it has no function assigned to it!", new Exception());
         } else {
             Term v = super.capply(u);
             if (function.allowUngroundTerms() || v.isGround()) {
@@ -96,10 +97,10 @@ public class ArithFunctionTerm extends Structure implements NumberTerm {
                 } catch (NoValueException e) {
                     // ignore and return this;
                 } catch (Exception e) {
-                    logger.log(Level.SEVERE, getErrorMsg()+ " -- "+e.getMessage()+" -- error while evaluating function, unifier = "+u);
+                    logger.error( getErrorMsg()+ " -- "+e.getMessage()+" -- error while evaluating function, unifier = "+u);
                 }
                 //} else {
-                //    logger.warning(getErrorMsg()+ " -- this function has unground arguments and can not be evaluated! Unifier is "+u);
+                //    logger.warn(getErrorMsg()+ " -- this function has unground arguments and can not be evaluated! Unifier is "+u);
             }
         }
         return clone();
@@ -120,7 +121,7 @@ public class ArithFunctionTerm extends Structure implements NumberTerm {
 
     @Override
     public Iterator<Unifier> logicalConsequence(Agent ag, Unifier un)  {
-        logger.log(Level.WARNING, "Arithmetic term cannot be used for logical consequence! "+getErrorMsg());
+        logger.warn( "Arithmetic term cannot be used for logical consequence! "+getErrorMsg());
         return LogExpr.EMPTY_UNIF_LIST.iterator();
     }
 

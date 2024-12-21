@@ -1,8 +1,8 @@
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
 
 import jason.architecture.AgArch;
 import jason.asSemantics.ActionExec;
@@ -19,7 +19,7 @@ import jason.infra.local.RunLocalMAS;
  */
 public class SimpleJasonAgent extends AgArch {
 
-    private static Logger logger = Logger.getLogger(SimpleJasonAgent.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(SimpleJasonAgent.class.getName());
 
     public static void main(String[] a) {
         new RunLocalMAS().setupLogger();
@@ -35,7 +35,7 @@ public class SimpleJasonAgent extends AgArch {
             ag.initAg();
             ag.load("demo.asl");
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Init error", e);
+            logger.error( "Init error", e);
         }
     }
 
@@ -43,13 +43,13 @@ public class SimpleJasonAgent extends AgArch {
         try {
             while (isRunning()) {
                 // calls the Jason engine to perform one reasoning cycle
-                logger.fine("Reasoning....");
+                logger.debug("Reasoning....");
                 getTS().reasoningCycle();
                 if (getTS().canSleep())
                     sleep();
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Run error", e);
+            logger.error( "Run error", e);
         }
     }
 

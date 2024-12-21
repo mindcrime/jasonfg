@@ -2,8 +2,9 @@ package jason.asSyntax.directives;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jason.asSemantics.Agent;
 import jason.asSemantics.ArithFunction;
@@ -18,7 +19,7 @@ import jason.functions.*;
  * @author Jomi
  */
 public class FunctionRegister extends DefaultDirective implements Directive {
-    static Logger logger = Logger.getLogger(FunctionRegister.class.getName());
+    static Logger logger = LoggerFactory.getLogger(FunctionRegister.class.getName());
 
     private final static Map<String,ArithFunction> functions = new HashMap<>();
 
@@ -55,7 +56,7 @@ public class FunctionRegister extends DefaultDirective implements Directive {
             ArithFunction af = c.getConstructor().newInstance();
             functions.put(af.getName(), af);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error registering function "+c.getName(),e);
+            logger.error( "Error registering function "+c.getName(),e);
         }
     }
 
@@ -65,11 +66,11 @@ public class FunctionRegister extends DefaultDirective implements Directive {
             ArithFunction af = c.getConstructor().newInstance();
             String error = FunctionRegister.checkFunctionName(af.getName());
             if (error != null)
-                logger.warning(error);
+                logger.warn(error);
             else
                 functions.put(af.getName(), af);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error registering function "+c.getName(),e);
+            logger.error( "Error registering function "+c.getName(),e);
         }
     }
 
@@ -109,10 +110,10 @@ public class FunctionRegister extends DefaultDirective implements Directive {
                 outerContent.addFunction(id, arity, predicate);
             } else {
                 // error
-                logger.log(Level.SEVERE, "Wrong number of arguments for register_function "+directive);
+                logger.error( "Wrong number of arguments for register_function "+directive);
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error processing directive register_function.",e);
+            logger.error( "Error processing directive register_function.",e);
         }
         return null;
     }

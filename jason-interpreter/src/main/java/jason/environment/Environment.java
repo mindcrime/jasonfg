@@ -11,8 +11,9 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jason.asSemantics.Unifier;
 import jason.asSyntax.Literal;
@@ -32,7 +33,7 @@ import jason.asSyntax.Structure;
  */
 public class Environment {
 
-    private static Logger logger = Logger.getLogger(Environment.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(Environment.class.getName());
 
     private List<Literal> percepts = Collections.synchronizedList(new ArrayList<Literal>());
     private Map<String,List<Literal>>  agPercepts = new ConcurrentHashMap<String, List<Literal>>();
@@ -343,7 +344,7 @@ public class Environment {
                     environmentInfraTier.actionExecuted(agName, action, success, infraData); // send the result of the execution to the agent
                 } catch (Exception ie) {
                     if (!(ie instanceof InterruptedException)) {
-                        logger.log(Level.WARNING, "act error!",ie);
+                        logger.warn( "act error!",ie);
                     }
                 }
             }

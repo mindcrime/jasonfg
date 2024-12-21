@@ -4,8 +4,9 @@ import jason.asSyntax.parser.as2j;
 
 import java.io.Serial;
 import java.io.StringReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.json.Json;
 import javax.json.JsonValue;
@@ -22,7 +23,7 @@ public final class StringTermImpl extends DefaultTerm implements StringTerm {
 
     @Serial
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = Logger.getLogger(StringTermImpl.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(StringTermImpl.class.getName());
 
     private final String value;
 
@@ -53,7 +54,7 @@ public final class StringTermImpl extends DefaultTerm implements StringTerm {
         try {
             return (StringTerm)parser.term();
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Error parsing string term " + sTerm,e);
+            logger.error("Error parsing string term " + sTerm,e);
             return null;
         }
     }

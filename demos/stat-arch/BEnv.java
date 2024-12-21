@@ -1,6 +1,6 @@
 import jason.asSyntax.Structure;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
 
 public class BEnv extends jason.environment.Environment {
 

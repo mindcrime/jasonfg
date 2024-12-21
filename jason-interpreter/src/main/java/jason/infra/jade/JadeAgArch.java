@@ -2,8 +2,8 @@ package jason.infra.jade;
 
 import java.io.FileReader;
 import java.io.Serializable;
-import java.util.logging.Level;
 
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import jade.core.AID;
@@ -53,9 +53,12 @@ public class JadeAgArch extends JadeAg {
     @SuppressWarnings("serial")
     @Override
     protected void setup() {
-        if (BaseLocalMAS.getRunner() != null)
+        if (BaseLocalMAS.getRunner() != null) {
             BaseLocalMAS.getRunner().setupLogger();
-        logger = jade.util.Logger.getMyLogger(this.getClass().getName() + "." + getLocalName());
+        }
+        
+        // logger = jade.util.Logger.getMyLogger(this.getClass().getName() + "." + getLocalName());
+        logger = LoggerFactory.getLogger( this.getClass().getName() + "." + getLocalName() );
         logger.info("starting "+getLocalName());
         try {
             AgentParameters ap = parseParameters();
@@ -63,18 +66,21 @@ public class JadeAgArch extends JadeAg {
                 jasonBridgeAgArch = new JasonBridgeArch(this);
                 jasonBridgeAgArch.init(ap);
 
-                if (jasonBridgeAgArch.getTS().getSettings().verbose() >= 0)
-                    logger.setLevel(jasonBridgeAgArch.getTS().getSettings().logLevel());
-
+                if (jasonBridgeAgArch.getTS().getSettings().verbose() >= 0) {
+                    
+                	// TODO: do we need this now that we've switched to slf4j?
+                	// logger.setLevel(jasonBridgeAgArch.getTS().getSettings().logLevel());
+                }
+                
                 registerAgInDF();
 
                 tsBehaviour = new JasonTSReasoner();
                 addBehaviour(tsBehaviour);
 
-                logger.fine("Created from source "+ap.getSource());
+                logger.debug("Created from source "+ap.getSource());
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Error creating JADE architecture.",e);
+            logger.error("Error creating JADE architecture.",e);
         }
     }
 
@@ -119,10 +125,10 @@ public class JadeAgArch extends JadeAg {
         } else {
             if (args[0].toString().equals("j-project")) { // load parameters from .mas2j
                 if (args.length != 3) {
-                    logger.log(Level.SEVERE, "To start agents from .mas2j file, you have to provide as parameters: (j-project,<file.mas2j>,<nameofagent in mas2j>)");
-                    logger.log(Level.SEVERE, "Current parameters are:");
+                    logger.error( "To start agents from .mas2j file, you have to provide as parameters: (j-project,<file.mas2j>,<nameofagent in mas2j>)");
+                    logger.error( "Current parameters are:");
                     for (int i=0; i<args.length; i++) {
-                        logger.log(Level.SEVERE, "   "+i+" = "+args[i]);
+                        logger.error( "   "+i+" = "+args[i]);
                     }
                     return null;
                 }
@@ -135,11 +141,11 @@ public class JadeAgArch extends JadeAg {
 
                 AgentParameters ap = project.getAg(args[2].toString());
                 if (ap == null) {
-                    logger.log(Level.SEVERE, "There is no agent '"+args[2]+"' in project '"+args[1]+"'.");
+                    logger.error( "There is no agent '"+args[2]+"' in project '"+args[1]+"'.");
                 } else {
                     ap.setSource(project.getSourcePaths().fixPath(ap.getSource().toString()));
                     //if (ap.qty > 1)
-                    //    logger.warning("Ignoring quantity of agents from mas2j, jade arch creates only ONE agent.");
+                    //    logger.warn("Ignoring quantity of agents from mas2j, jade arch creates only ONE agent.");
                 }
 
                 // The case CARTAGO+JADE
@@ -202,8 +208,8 @@ public class JadeAgArch extends JadeAg {
                 DFService.deregister(this);
                 DFService.register(this,dfa);
             } catch (Exception ex) {
-                logger.log(Level.SEVERE, "Error registering agent in DF", e);
-                logger.log(Level.SEVERE, "Error unregistering agent in DF", ex);
+                logger.error( "Error registering agent in DF", e);
+                logger.error( "Error unregistering agent in DF", ex);
             }
         }
     }
@@ -218,7 +224,7 @@ public class JadeAgArch extends JadeAg {
                     boolean isBreakPoint = false;
                     try {
                         isBreakPoint = ts.getC().getSelectedOption().getPlan().hasBreakpoint();
-                        if (logger.isLoggable(Level.FINE)) logger.fine("Informing controller that I finished a reasoning cycle "+jasonBridgeAgArch.getCycleNumber()+". Breakpoint is " + isBreakPoint);
+                        if (logger.isDebugEnabled()) logger.debug("Informing controller that I finished a reasoning cycle "+jasonBridgeAgArch.getCycleNumber()+". Breakpoint is " + isBreakPoint);
                     } catch (NullPointerException e) {
                         // no problem, there is no sel opt, no plan ....
                     }
@@ -246,7 +252,7 @@ public class JadeAgArch extends JadeAg {
                 jasonBridgeAgArch = null;
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Error in doDelete.",e);
+            logger.error("Error in doDelete.",e);
         } finally {
             super.doDelete();
         }
@@ -276,14 +282,14 @@ public class JadeAgArch extends JadeAg {
                 r.setContentObject((Serializable)agStateDoc);
                 send(r);
             } catch (Exception e) {
-                logger.log(Level.SEVERE, "Error sending message " + r, e);
+                logger.error( "Error sending message " + r, e);
             }
         }
 
         m = receive(tc);
         if (m != null) {
             int cycle = Integer.parseInt(m.getUserDefinedParameter("cycle"));
-            logger.fine("new cycle: "+cycle);
+            logger.debug("new cycle: "+cycle);
             jasonBridgeAgArch.setCycleNumber(cycle);
             return true;
         }
@@ -312,7 +318,7 @@ public class JadeAgArch extends JadeAg {
             m.setContent(breakpoint+","+cycle);
             send(m);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error sending cycle finished.", e);
+            logger.error( "Error sending cycle finished.", e);
         }
     }
 }

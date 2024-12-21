@@ -5,8 +5,9 @@ import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Pred;
 import jason.asSyntax.Term;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of the Backtracking Declarative Goal pattern (see DALT 2006 paper)
@@ -15,7 +16,7 @@ import java.util.logging.Logger;
  */
 public class BDG extends DG {
 
-    static Logger logger = Logger.getLogger(BDG.class.getName());
+    static Logger logger = LoggerFactory.getLogger(BDG.class.getName());
 
     @Override
     public Agent process(Pred directive, Agent outerContent, Agent innerContent) {
@@ -34,7 +35,7 @@ public class BDG extends DG {
                 return newAg;
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Directive error.", e);
+            logger.error("Directive error.", e);
         }
         return null;
     }

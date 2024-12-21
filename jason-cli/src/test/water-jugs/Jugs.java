@@ -10,7 +10,7 @@ import java.util.logging.*;
 
 public class Jugs extends Environment {
 
-    private Logger logger = Logger.getLogger("water_jugs.mas2j."+Jugs.class.getName());
+    private Logger logger = LoggerFactory.getLogger("water_jugs.mas2j."+Jugs.class.getName());
 
     int j5 = 0; // water in jug 5l
     int j3 = 0; // water in jug 3l

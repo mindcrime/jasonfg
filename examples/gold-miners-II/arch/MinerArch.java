@@ -11,8 +11,8 @@ import jason.environment.grid.Location;
 
 import java.io.PrintWriter;
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
 
 import env.WorldModel;
 import env.WorldView;
@@ -33,7 +33,7 @@ public class MinerArch extends AgArch {
     int        teamSize = 6;
 
     WriteModelThread writeModelT = null;
-    protected Logger logger = Logger.getLogger(MinerArch.class.getName());
+    protected Logger logger = LoggerFactory.getLogger(MinerArch.class.getName());
 
 
     @Override
@@ -254,7 +254,7 @@ public class MinerArch extends AgArch {
                 }
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error checking email!",e);
+            logger.error( "Error checking email!",e);
         }
     }
 

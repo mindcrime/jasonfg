@@ -9,8 +9,9 @@ import jason.asSyntax.directives.Directive;
 import jason.asSyntax.directives.DirectiveProcessor;
 import jason.bb.BeliefBase;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of the  Maintenance Goal pattern (see DALT 2006 paper)
@@ -19,7 +20,7 @@ import java.util.logging.Logger;
  */
 public class MG extends DefaultDirective  implements Directive {
 
-    static Logger logger = Logger.getLogger(MG.class.getName());
+    static Logger logger = LoggerFactory.getLogger(MG.class.getName());
 
     @Override
     public Agent process(Pred directive, Agent outerContent, Agent innerContent) {
@@ -49,7 +50,7 @@ public class MG extends DefaultDirective  implements Directive {
                 return newAg;
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Directive error.", e);
+            logger.error("Directive error.", e);
         }
         return null;
     }

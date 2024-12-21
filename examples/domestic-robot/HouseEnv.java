@@ -1,7 +1,7 @@
 import jason.asSyntax.*;
 import jason.environment.Environment;
 import jason.environment.grid.Location;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
 
 public class HouseEnv extends Environment {
 
@@ -16,7 +16,7 @@ public class HouseEnv extends Environment {
     public static final Literal af = Literal.parseLiteral("at(robot,fridge)");
     public static final Literal ao = Literal.parseLiteral("at(robot,owner)");
 
-    static Logger logger = Logger.getLogger(HouseEnv.class.getName());
+    static Logger logger = LoggerFactory.getLogger(HouseEnv.class.getName());
 
     HouseModel model; // the model of the grid
 

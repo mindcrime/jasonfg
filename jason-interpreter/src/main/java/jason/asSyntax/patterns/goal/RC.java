@@ -8,8 +8,9 @@ import jason.asSyntax.directives.DefaultDirective;
 import jason.asSyntax.directives.Directive;
 import jason.asSyntax.directives.DirectiveProcessor;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of the  Relativised Commitment pattern (see DALT 2006 paper)
@@ -18,7 +19,7 @@ import java.util.logging.Logger;
  */
 public class RC extends DefaultDirective implements Directive {
 
-    static Logger logger = Logger.getLogger(RC.class.getName());
+    static Logger logger = LoggerFactory.getLogger(RC.class.getName());
 
     @Override
     public Agent process(Pred directive, Agent outerContent, Agent innerContent) {
@@ -26,7 +27,7 @@ public class RC extends DefaultDirective implements Directive {
             Term goal = directive.getTerm(0);
             Term motivation = directive.getTerm(1);
             Pred subDir = Pred.parsePred("bc("+goal+")");
-            //logger.fine("parameters="+goal+","+motivation+","+subDir);
+            //logger.debug("parameters="+goal+","+motivation+","+subDir);
             Directive sd = DirectiveProcessor.getDirective(subDir.getFunctor());
 
             // apply sub directive
@@ -41,7 +42,7 @@ public class RC extends DefaultDirective implements Directive {
                 return newAg;
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Directive error.", e);
+            logger.error("Directive error.", e);
         }
         return null;
     }

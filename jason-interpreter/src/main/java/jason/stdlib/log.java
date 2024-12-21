@@ -1,6 +1,8 @@
 package jason.stdlib;
 
-import java.util.logging.Level;
+
+
+import org.slf4j.event.Level;
 
 import jason.JasonException;
 import jason.asSemantics.DefaultInternalAction;
@@ -85,6 +87,10 @@ public class log extends DefaultInternalAction {
             }
         }
 
+        String levelFunctor = ((Atom)args[0]).getFunctor();
+        
+        // TODO: do we need this now that we're switching to slf4j?
+        /* 
         Level level;
         switch (((Atom)args[0]).getFunctor()) {
         case "severe": level = Level.SEVERE; break;
@@ -95,9 +101,17 @@ public class log extends DefaultInternalAction {
         default:
             level = Level.INFO; break;
         }
-
+		*/
+        
+        
         if (ts != null) {
-            ts.getLogger().log(level, sout.toString());
+        	
+        	// the old way:
+        	// ts.getLogger().log(level, sout.toString());
+        	
+        	// updated to use slf4j
+        	ts.getLogger().atLevel( Level.valueOf( levelFunctor ) ).log(sout.toString());
+        	
         } else {
             System.out.print(sout.toString() + getNewLine());
         }

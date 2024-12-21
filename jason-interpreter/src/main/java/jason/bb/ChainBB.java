@@ -7,8 +7,9 @@ import jason.asSyntax.Term;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -32,7 +33,7 @@ import java.util.logging.Logger;
  */
 public class ChainBB extends ChainBBAdapter {
 
-    private static Logger logger = Logger.getLogger(ChainBB.class.getSimpleName());
+    private static Logger logger = LoggerFactory.getLogger(ChainBB.class.getSimpleName());
 
     @Override
     public void init(Agent ag, String[] args) {
@@ -61,7 +62,7 @@ public class ChainBB extends ChainBBAdapter {
                 bb = bb.getNextAdapter();
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error creating ChainBB",e);
+            logger.error( "Error creating ChainBB",e);
         }
     }
 

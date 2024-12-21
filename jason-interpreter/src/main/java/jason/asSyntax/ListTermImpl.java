@@ -9,8 +9,9 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -39,7 +40,7 @@ import jason.asSyntax.parser.as2j;
 public class ListTermImpl extends Structure implements ListTerm {
 
     private static final long serialVersionUID = 1L;
-    private static Logger logger = Logger.getLogger(ListTermImpl.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(ListTermImpl.class.getName());
 
     public static final String LIST_FUNCTOR = ".";
     private Term term = null;
@@ -60,7 +61,7 @@ public class ListTermImpl extends Structure implements ListTerm {
         try {
             return parser.list();
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Error parsing list "+sList,e);
+            logger.error("Error parsing list "+sList,e);
             return null;
         }
     }
@@ -184,7 +185,7 @@ public class ListTermImpl extends Structure implements ListTerm {
 
     /** return the this ListTerm elements (0=Term, 1=ListTerm) */
     public List<Term> getTerms() {
-        logger.warning("Do not use getTerms in lists!");
+        logger.warn("Do not use getTerms in lists!");
         List<Term> l = new ArrayList<>(2);
         if (term != null) l.add(term);
         if (next != null) l.add(next);
@@ -192,7 +193,7 @@ public class ListTermImpl extends Structure implements ListTerm {
     }
 
     public void addTerm(Term t) {
-        logger.warning("Do not use addTerm in lists! Use add(Term).");
+        logger.warn("Do not use addTerm in lists! Use add(Term).");
     }
 
     public int size() {
@@ -254,7 +255,7 @@ public class ListTermImpl extends Structure implements ListTerm {
 
     @Override
     public Iterator<Unifier> logicalConsequence(Agent ag, Unifier un) {
-        logger.log(Level.WARNING, "ListTermImpl cannot be used for logical consequence!", new Exception());
+        logger.warn( "ListTermImpl cannot be used for logical consequence!", new Exception());
         return LogExpr.EMPTY_UNIF_LIST.iterator();
     }
 

@@ -4,9 +4,9 @@ import java.io.Serializable;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** MAS Runtime Settings for an Agent (from mas2j file, agent declaration) */
 public class Settings implements Serializable {
@@ -22,7 +22,7 @@ public class Settings implements Serializable {
     public static final int       ODefaultVerbose = -1;
     public static final boolean   ODefaultSync    = false;
 
-    private static Logger logger = Logger.getLogger(Settings.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(Settings.class.getName());
 
     private byte    events     = ODiscard;
     private boolean intBels    = OSameFocus;
@@ -48,13 +48,13 @@ public class Settings implements Serializable {
 
     @SuppressWarnings("unchecked")
     public void setOptions(String options) {
-        logger.fine("Setting options from "+options);
+        logger.debug("Setting options from "+options);
         jason.mas2j.parser.mas2j parser = new jason.mas2j.parser.mas2j( new StringReader(options));
         try {
             setOptions(parser.ASoptions());
-            logger.fine("Settings are "+userParameters);
+            logger.debug("Settings are "+userParameters);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error parsing options "+options,e);
+            logger.error( "Error parsing options "+options,e);
         }
     }
 
@@ -168,6 +168,7 @@ public class Settings implements Serializable {
         return verbose;
     }
 
+    /* TODO: port to slf4j */
     public java.util.logging.Level logLevel() {
         switch(verbose) {
         case 0 :

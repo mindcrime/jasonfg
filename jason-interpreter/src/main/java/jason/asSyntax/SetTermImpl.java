@@ -26,7 +26,7 @@ public class SetTermImpl extends DefaultTerm implements SetTerm {
 
     @Serial
     private static final long serialVersionUID = 1L;
-    //private static Logger logger = Logger.getLogger(SetTermImpl.class.getName());
+    //private static Logger logger = LoggerFactory.getLogger(SetTermImpl.class.getName());
 
     private Set<Term> set;
 

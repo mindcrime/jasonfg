@@ -1,7 +1,8 @@
 package jason.asSyntax.patterns.goal;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jason.asSemantics.Agent;
 import jason.asSyntax.ASSyntax;
@@ -18,7 +19,7 @@ import jason.asSyntax.directives.DirectiveProcessor;
  */
 public class OMC extends DefaultDirective implements Directive {
 
-    static Logger logger = Logger.getLogger(OMC.class.getName());
+    static Logger logger = LoggerFactory.getLogger(OMC.class.getName());
 
     @Override
     public Agent process(Pred directive, Agent outerContent, Agent innerContent) {
@@ -50,7 +51,7 @@ public class OMC extends DefaultDirective implements Directive {
                 return newAg;
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Directive error.", e);
+            logger.error("Directive error.", e);
         }
         return null;
     }

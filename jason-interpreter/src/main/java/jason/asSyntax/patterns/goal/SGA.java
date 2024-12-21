@@ -11,8 +11,9 @@ import jason.asSyntax.Trigger;
 import jason.asSyntax.directives.DefaultDirective;
 import jason.asSyntax.directives.Directive;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of the Sequenced Goal Adoption pattern (see DALT 2006 paper)
@@ -21,7 +22,7 @@ import java.util.logging.Logger;
  */
 public class SGA extends DefaultDirective implements Directive {
 
-    static Logger logger = Logger.getLogger(SGA.class.getName());
+    static Logger logger = LoggerFactory.getLogger(SGA.class.getName());
 
     @Override
     public Agent process(Pred directive, Agent outerContent, Agent innerContent) {
@@ -61,7 +62,7 @@ public class SGA extends DefaultDirective implements Directive {
 
             return newAg;
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Directive DG error.", e);
+            logger.error("Directive DG error.", e);
         }
         return null;
     }

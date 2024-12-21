@@ -52,7 +52,7 @@ public class PlanLibrary implements Iterable<Plan>, Serializable, ToDOM {
 
     private boolean hasUserKqmlReceived = false;
 
-    //private Logger logger = Logger.getLogger(PlanLibrary.class.getName());
+    //private Logger logger = LoggerFactory.getLogger(PlanLibrary.class.getName());
 
     private final transient Object lockPL;
 

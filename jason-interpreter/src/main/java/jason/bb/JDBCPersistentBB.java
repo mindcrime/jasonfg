@@ -17,8 +17,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jason.JasonException;
 import jason.asSemantics.Agent;
@@ -88,7 +89,7 @@ import jason.asSyntax.parser.TokenMgrError;
    @author Jomi
  */
 public class JDBCPersistentBB extends ChainBBAdapter {
-    private static Logger logger     = Logger.getLogger(JDBCPersistentBB.class.getName());
+    private static Logger logger     = LoggerFactory.getLogger(JDBCPersistentBB.class.getName());
 
     // TODO: manage namespace
     static final String   COL_PREFIX = "term";
@@ -119,14 +120,14 @@ public class JDBCPersistentBB extends ChainBBAdapter {
         try {
             agentName = ag.getTS().getAgArch().getAgName();
         } catch (Exception e) {
-            logger.warning("Can not get the agent name!");
+            logger.warn("Can not get the agent name!");
             agentName = "none";
         }
         try {
-            logger.fine("Loading driver " + args[0]);
+            logger.debug("Loading driver " + args[0]);
             Class.forName(args[0]);
             url = String.format(args[1], agentName);
-            logger.fine("Connecting: url= " + url + ", user=" + args[2] + ", password=" + args[3]);
+            logger.debug("Connecting: url= " + url + ", user=" + args[2] + ", password=" + args[3]);
             conn = DriverManager.getConnection(url, args[2], args[3]);
 
             // load tables mapped to DB
@@ -158,13 +159,13 @@ public class JDBCPersistentBB extends ChainBBAdapter {
                 belsDB.put(new PredicateIndicator("~"+ts.getFunctor(), arity), rs.getMetaData());
                 stmt.close();
             }
-            //logger.fine("Map=" + belsDB);
+            //logger.debug("Map=" + belsDB);
         } catch (ArrayIndexOutOfBoundsException e) {
-            logger.log(Level.SEVERE, "Wrong parameters for JDBCPersistentBB initialisation.", e);
+            logger.error( "Wrong parameters for JDBCPersistentBB initialisation.", e);
         } catch (ClassNotFoundException e) {
-            logger.log(Level.SEVERE, "Error loading jdbc driver " + args[0], e);
+            logger.error( "Error loading jdbc driver " + args[0], e);
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "DB connection failure. url= " + url + ", user=" + args[2] + ", password=" + args[3], e);
+            logger.error( "DB connection failure. url= " + url + ", user=" + args[2] + ", password=" + args[3], e);
         }
         nextBB.init(ag, args);
     }
@@ -179,13 +180,13 @@ public class JDBCPersistentBB extends ChainBBAdapter {
             }
             conn.close(); // if there are no other open connection
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error in shutdown SGBD ", e);
+            logger.error( "Error in shutdown SGBD ", e);
         }
         nextBB.stop();
     }
 
     public void clear() {
-        logger.warning("clear is still not implemented for JDBC BB!");
+        logger.warn("clear is still not implemented for JDBC BB!");
     }
 
     /** returns true if the literal is stored in a DB */
@@ -215,20 +216,20 @@ public class JDBCPersistentBB extends ChainBBAdapter {
             // create a literal from query
             stmt = conn.createStatement();
             String q = getSelect(l);
-            if (logger.isLoggable(Level.FINE)) logger.fine("query for contains "+l+":"+q);
+            if (logger.isDebugEnabled()) logger.debug("query for contains "+l+":"+q);
             ResultSet rs = stmt.executeQuery(q);
             if (rs.next()) {
                 return resultSetToLiteral(rs,l.getPredicateIndicator());
             }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "SQL Error", e);
+            logger.error( "SQL Error", e);
             //} catch (ParseException e) {
-            //    logger.log(Level.SEVERE, "Parser Error", e);
+            //    logger.error( "Parser Error", e);
         } finally {
             try {
                 stmt.close();
             } catch (Exception e) {
-                logger.log(Level.WARNING, "SQL Error closing connection", e);
+                logger.warn( "SQL Error closing connection", e);
             }
         }
         return null;
@@ -243,9 +244,9 @@ public class JDBCPersistentBB extends ChainBBAdapter {
     public boolean add(int index, Literal l) throws JasonException {
         if (!isDB(l))
             return nextBB.add(l);
-        if (index != 0)
-            logger.severe("JDBC BB does not support insert index "+index+" for "+l+", using index = 0!");
-
+        if (index != 0) {
+            logger.error("JDBC BB does not support insert index "+index+" for "+l+", using index = 0!");
+        }
         Literal bl = contains(l);
         Statement stmt = null;
         try {
@@ -267,7 +268,7 @@ public class JDBCPersistentBB extends ChainBBAdapter {
                         // store bl annots
                         stmt = conn.createStatement();
                         String q = "update "+getTableName(bl)+" set "+COL_ANNOT+" = '"+bl.getAnnots()+"' "+getWhere(l);
-                        if (logger.isLoggable(Level.FINE)) logger.fine("query for update "+q);
+                        if (logger.isDebugEnabled()) logger.debug("query for update "+q);
                         stmt.executeUpdate(q);
                         return true;
                     }
@@ -275,7 +276,7 @@ public class JDBCPersistentBB extends ChainBBAdapter {
             } else {
                 // create insert command
                 stmt = conn.createStatement();
-                if (logger.isLoggable(Level.FINE)) logger.fine("query for insert "+getInsert(l));
+                if (logger.isDebugEnabled()) logger.debug("query for insert "+getInsert(l));
                 stmt.executeUpdate(getInsert(l));
                 // add it in the percepts list
                 if (l.hasAnnot(TPercept)) {
@@ -284,12 +285,12 @@ public class JDBCPersistentBB extends ChainBBAdapter {
                 return true;
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "SQL Error", e);
+            logger.error( "SQL Error", e);
         } finally {
             try {
                 if (stmt != null) stmt.close();
             } catch (Exception e) {
-                logger.log(Level.WARNING, "SQL Error closing connection", e);
+                logger.warn( "SQL Error closing connection", e);
             }
         }
         return false;
@@ -320,12 +321,12 @@ public class JDBCPersistentBB extends ChainBBAdapter {
                     return result;
                 }
             } catch (SQLException e) {
-                logger.log(Level.SEVERE, "SQL Error", e);
+                logger.error( "SQL Error", e);
             } finally {
                 try {
                     stmt.close();
                 } catch (Exception e) {
-                    logger.log(Level.WARNING, "SQL Error closing connection", e);
+                    logger.warn( "SQL Error closing connection", e);
                 }
             }
         }
@@ -351,12 +352,12 @@ public class JDBCPersistentBB extends ChainBBAdapter {
             stmt = conn.createStatement();
             stmt.executeUpdate(getDeleteAll(pi));
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "SQL Error", e);
+            logger.error( "SQL Error", e);
         } finally {
             try {
                 stmt.close();
             } catch (Exception e) {
-                logger.log(Level.WARNING, "SQL Error closing connection", e);
+                logger.warn( "SQL Error closing connection", e);
             }
         }
         return false;
@@ -377,7 +378,7 @@ public class JDBCPersistentBB extends ChainBBAdapter {
             String q = null;
             try {
                 q = getSelect(l);
-                if (logger.isLoggable(Level.FINE)) logger.fine("getRelevant query for "+l+": "+q);
+                if (logger.isDebugEnabled()) logger.debug("getRelevant query for "+l+": "+q);
                 final ResultSet rs = conn.createStatement().executeQuery(q);
                 return new Iterator<Literal>() {
                     boolean hasNext   = true;
@@ -387,7 +388,7 @@ public class JDBCPersistentBB extends ChainBBAdapter {
                             try {
                                 hasNext = rs.next();
                             } catch (SQLException e) {
-                                logger.log(Level.SEVERE, "SQL Error", e);
+                                logger.error( "SQL Error", e);
                             }
                             firstcall = false;
                         }
@@ -404,16 +405,16 @@ public class JDBCPersistentBB extends ChainBBAdapter {
                             if (!hasNext) rs.close();
                             return l;
                         } catch (Exception e) {
-                            logger.log(Level.SEVERE, "Error", e);
+                            logger.error( "Error", e);
                         }
                         return null;
                     }
                     public void remove() {
-                        logger.warning("remove in jdbc get relevant is not implemented!");
+                        logger.warn("remove in jdbc get relevant is not implemented!");
                     }
                 };
             } catch (SQLException e) {
-                logger.log(Level.SEVERE, "SQL Error in getRelevant for "+l+" with query "+q, e);
+                logger.error( "SQL Error in getRelevant for "+l+" with query "+q, e);
             }
         }
         return null;
@@ -435,12 +436,12 @@ public class JDBCPersistentBB extends ChainBBAdapter {
                 }
             }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "SQL Error", e);
+            logger.error( "SQL Error", e);
         } finally {
             try {
                 stmt.close();
             } catch (Exception e) {
-                logger.log(Level.WARNING, "SQL Error closing connection", e);
+                logger.warn( "SQL Error closing connection", e);
             }
         }
         return count + nextBB.size();
@@ -468,12 +469,12 @@ public class JDBCPersistentBB extends ChainBBAdapter {
                 }
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error", e);
+            logger.error( "Error", e);
         } finally {
             try {
                 stmt.close();
             } catch (Exception e) {
-                logger.log(Level.WARNING, "SQL Error closing connection", e);
+                logger.warn( "SQL Error closing connection", e);
             }
         }
         return all.iterator();
@@ -562,7 +563,7 @@ public class JDBCPersistentBB extends ChainBBAdapter {
             ct.append(colName + " " + colType + ", ");
         }
         ct.append(COL_NEG + " boolean, " + COL_ANNOT + " varchar(256))");
-        logger.fine("Creating table: " + ct);
+        logger.debug("Creating table: " + ct);
         return ct.toString();
     }
 
@@ -672,12 +673,12 @@ public class JDBCPersistentBB extends ChainBBAdapter {
             ResultSetMetaData meta = stmt.executeQuery("select * from publisher").getMetaData();
             belsDB.put(new PredicateIndicator("publisher", 2), meta);
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "SQL Error", e);
+            logger.error( "SQL Error", e);
         } finally {
             try {
                 stmt.close();
             } catch (Exception e) {
-                logger.log(Level.WARNING, "SQL Error closing connection", e);
+                logger.warn( "SQL Error closing connection", e);
             }
         }
     }

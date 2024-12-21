@@ -6,8 +6,9 @@ import jason.asSemantics.Unifier;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -27,7 +28,7 @@ import org.w3c.dom.Element;
 public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBody> {
 
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = Logger.getLogger(PlanBodyImpl.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(PlanBodyImpl.class.getName());
 
     //public static final String BODY_PLAN_FUNCTOR = ";";
 
@@ -243,7 +244,7 @@ public class PlanBodyImpl extends Structure implements PlanBody, Iterable<PlanBo
 
     @Override
     public Iterator<Unifier> logicalConsequence(Agent ag, Unifier un) {
-        logger.log(Level.WARNING, "PlanBodyImpl cannot be used for logical consequence!", new Exception());
+        logger.warn( "PlanBodyImpl cannot be used for logical consequence!", new Exception());
         return LogExpr.EMPTY_UNIF_LIST.iterator();
     }
 

@@ -9,7 +9,7 @@ import java.util.logging.*;
 /** list all BB */
 public class list extends DefaultInternalAction {
 
-    private Logger logger = Logger.getLogger("FoodSimulation."+list.class.getName());
+    private Logger logger = LoggerFactory.getLogger("FoodSimulation."+list.class.getName());
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
@@ -21,7 +21,7 @@ public class list extends DefaultInternalAction {
             logger.info(s);
             return true;
         } catch (Exception e) {
-            logger.warning("Error in internal action 'bb.list'! "+e);
+            logger.warn("Error in internal action 'bb.list'! "+e);
         }
         return false;
     }

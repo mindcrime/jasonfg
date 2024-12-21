@@ -1,7 +1,8 @@
 package jason.infra.local;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jason.JasonException;
 import jason.asSemantics.ActionExec;
@@ -22,7 +23,7 @@ public class LocalEnvironment implements EnvironmentInfraTier {
     private BaseLocalMAS masRunner = BaseLocalMAS.getRunner();
     private boolean running = true;
 
-    private static Logger logger = Logger.getLogger(LocalEnvironment.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(LocalEnvironment.class.getName());
 
     public LocalEnvironment(ClassParameters userEnvArgs, BaseLocalMAS masRunner) throws JasonException {
         this.masRunner = masRunner;
@@ -32,7 +33,7 @@ public class LocalEnvironment implements EnvironmentInfraTier {
                 userEnv.setEnvironmentInfraTier(this);
                 userEnv.init(userEnvArgs.getParametersArray());
             } catch (Exception e) {
-                logger.log(Level.SEVERE,"Error in Local MAS environment creation",e);
+                logger.error("Error in Local MAS environment creation",e);
                 throw new JasonException("The user environment class instantiation '"+userEnvArgs+"' has failed!"+e.getMessage());
             }
         }
@@ -86,7 +87,7 @@ public class LocalEnvironment implements EnvironmentInfraTier {
                         ag.wakeUpSense();
                     }
                 } else {
-                    logger.log(Level.SEVERE, "Error sending message notification: agent " + agName + " does not exist!");
+                    logger.error( "Error sending message notification: agent " + agName + " does not exist!");
                 }
             }
 

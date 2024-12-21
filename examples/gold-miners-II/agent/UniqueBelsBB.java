@@ -22,7 +22,7 @@ import java.util.Map;
  * @author jomi
  */
 public class UniqueBelsBB extends DefaultBeliefBase {
-    //static private Logger logger = Logger.getLogger(UniqueBelsBB.class.getName());
+    //static private Logger logger = LoggerFactory.getLogger(UniqueBelsBB.class.getName());
 
     Map<String,Literal> uniqueBels = new HashMap<String,Literal>();
     Unifier             u = new Unifier();

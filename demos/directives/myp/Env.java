@@ -7,7 +7,7 @@ import jason.asSyntax.Structure;
 
 public class Env extends jason.environment.Environment {
 
-    //private Logger logger = Logger.getLogger("goalpattern.mas2j."+Env.class.getName());
+    //private Logger logger = LoggerFactory.getLogger("goalpattern.mas2j."+Env.class.getName());
 
     @Override
     public boolean executeAction(String ag, Structure action) {

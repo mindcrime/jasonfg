@@ -8,8 +8,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -49,7 +50,7 @@ public class RunJadeMAS extends RunLocalMAS {
     public static String controllerName  = "j_controller";
     public static String environmentName = "j_environment";
 
-    private static Logger logger = Logger.getLogger(RunJadeMAS.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(RunJadeMAS.class.getName());
 
     private AgentController envc, crtc;
     private Map<String,AgentController> ags = new HashMap<String,AgentController>();
@@ -172,7 +173,7 @@ public class RunJadeMAS extends RunLocalMAS {
             //Runtime.instance().setCloseVM(true); // Exit the JVM when there are no more containers around
             return cc != null;
         } catch (Throwable e) {
-            logger.log(Level.WARNING,"Error starting JADE",e);
+            logger.warn("Error starting JADE",e);
             return false;
         }
     }
@@ -188,7 +189,7 @@ public class RunJadeMAS extends RunLocalMAS {
                 envc = cc.createNewAgent(environmentName, JadeEnvironment.class.getName(), new Object[] { getProject().getEnvClass() });
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error creating the environment: ", e);
+            logger.error( "Error creating the environment: ", e);
             return;
         }
     }
@@ -201,11 +202,11 @@ public class RunJadeMAS extends RunLocalMAS {
                 controlClass = new ClassParameters(ExecutionControlGUI.class.getName());
             }
             if (controlClass != null) {
-                logger.fine("Creating controller " + controlClass);
+                logger.debug("Creating controller " + controlClass);
                 crtc = cc.createNewAgent(controllerName, JadeExecutionControl.class.getName(), new Object[] { controlClass });
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error creating the controller: ", e);
+            logger.error( "Error creating the controller: ", e);
             return;
         }
     }
@@ -240,7 +241,7 @@ public class RunJadeMAS extends RunLocalMAS {
                         ags.put(numberedAg,ac);
                     }
                 } catch (Exception e) {
-                    logger.log(Level.SEVERE, "Error creating agent " + ap.name, e);
+                    logger.error( "Error creating agent " + ap.name, e);
                 }
             }
 
@@ -257,7 +258,7 @@ public class RunJadeMAS extends RunLocalMAS {
                 }
             }
         } catch (Throwable e) {
-            logger.log(Level.SEVERE, "Error creating agents: ", e);
+            logger.error( "Error creating agents: ", e);
         }
     }
 
@@ -274,7 +275,7 @@ public class RunJadeMAS extends RunLocalMAS {
                 ag.start();
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error starting agents.", e);
+            logger.error( "Error starting agents.", e);
         }
     }
 
@@ -284,7 +285,7 @@ public class RunJadeMAS extends RunLocalMAS {
             logger.info("Finishing the system.");
             new JadeRuntimeServices(cc,null).stopMAS(0, true, 0); // TODO: implement deadline for stopMAS in JADE
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error stopping system.", e);
+            logger.error( "Error stopping system.", e);
         }
         System.exit(0);
     }

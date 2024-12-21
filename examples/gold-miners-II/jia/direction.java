@@ -9,7 +9,7 @@ import jason.asSyntax.Term;
 import jason.environment.grid.Location;
 
 import java.util.Random;
-import java.util.logging.Level;
+
 
 import arch.LocalWorldModel;
 import arch.MinerArch;
@@ -70,7 +70,7 @@ public class direction extends DefaultInternalAction {
             }
             return un.unifies(terms[4], new Atom(sAction));
         } catch (Throwable e) {
-            ts.getLogger().log(Level.SEVERE, "direction error: "+e, e);
+            ts.getLogger().error( "direction error: "+e, e);
         }
         return false;
     }

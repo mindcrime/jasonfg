@@ -11,8 +11,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -31,14 +32,14 @@ import org.w3c.dom.Element;
 public class VarTerm extends LiteralImpl implements NumberTerm, ListTerm { //, StringTerm, ObjectTerm, PlanBody {
 
     private static final long serialVersionUID = 1L;
-    private static Logger logger = Logger.getLogger(VarTerm.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(VarTerm.class.getName());
 
     //private Term value  = null;
 
     public VarTerm(String s) {
         super(s);
         if (s != null && Character.isLowerCase(s.charAt(0))) {
-            logger.warning("Are you sure you want to create a VarTerm that begins with lowercase (" + s + ")? Should it be a Term instead?");
+            logger.warn("Are you sure you want to create a VarTerm that begins with lowercase (" + s + ")? Should it be a Term instead?");
             Exception e = new Exception("stack");
             e.printStackTrace();
         }
@@ -59,7 +60,7 @@ public class VarTerm extends LiteralImpl implements NumberTerm, ListTerm { //, S
         try {
             return parser.var(Literal.DefaultNS);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error parsing var " + sVar, e);
+            logger.error( "Error parsing var " + sVar, e);
             return null;
         }
     }
@@ -70,7 +71,7 @@ public class VarTerm extends LiteralImpl implements NumberTerm, ListTerm { //, S
             Term vl = u.get(this);
             if (vl != null) {
                 if (!vl.isCyclicTerm() && vl.hasVar(this, u)) {
-                    //logger.warning("The value of a variable contains itself, variable "+super.getFunctor()+" "+super.getSrcInfo()+", value="+vl+", unifier="+u);
+                    //logger.warn("The value of a variable contains itself, variable "+super.getFunctor()+" "+super.getSrcInfo()+", value="+vl+", unifier="+u);
 
                     u.remove(this); // remove this var to avoid loops in the apply below
                     Term tempVl = vl.capply(u);
@@ -221,7 +222,7 @@ public class VarTerm extends LiteralImpl implements NumberTerm, ListTerm { //, S
 
     @Override
     public void addTerm(Term t) {
-        logger.log(Level.WARNING, "The addTerm '"+t+"' in "+this+" was lost, since I am a var.", new Exception());
+        logger.warn( "The addTerm '"+t+"' in "+this+" was lost, since I am a var.", new Exception());
     }
 
 

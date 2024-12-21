@@ -11,8 +11,9 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jason.JasonException;
 import jason.NoValueException;
@@ -34,7 +35,6 @@ import jason.asSyntax.Plan;
 import jason.asSyntax.PlanBody;
 import jason.asSyntax.PlanBody.BodyType;
 import jason.asSyntax.PlanBodyImpl;
-import jason.pl.PlanLibrary;
 import jason.asSyntax.SourceInfo;
 import jason.asSyntax.StringTermImpl;
 import jason.asSyntax.Structure;
@@ -46,6 +46,7 @@ import jason.asSyntax.UnnamedVar;
 import jason.asSyntax.VarTerm;
 import jason.asSyntax.parser.ParseException;
 import jason.bb.BeliefBase;
+import jason.pl.PlanLibrary;
 import jason.runtime.Settings;
 import jason.stdlib.add_nested_source;
 import jason.stdlib.desire;
@@ -101,9 +102,14 @@ public class TransitionSystem implements Serializable {
         nrcslbr = setts.nrcbp(); // to do BR to start with
 
         setLogger(agArch);
-        if (setts != null && setts.verbose() >= 0)
+        
+        // TODO: do we need this now that we've switched to slf4j?
+        /* 
+        if (setts != null && setts.verbose() >= 0) {
             logger.setLevel(setts.logLevel());
-
+        }
+        */
+        
         if (a != null)
             a.setTS(this);
 
@@ -113,9 +119,9 @@ public class TransitionSystem implements Serializable {
 
     public void setLogger(AgArch arch) {
         if (arch != null)
-            logger = Logger.getLogger(TransitionSystem.class.getName() + "." + arch.getAgName());
+            logger = LoggerFactory.getLogger(TransitionSystem.class.getName() + "." + arch.getAgName());
         else
-            logger = Logger.getLogger(TransitionSystem.class.getName());
+            logger = LoggerFactory.getLogger(TransitionSystem.class.getName());
     }
     public void setLogger(Logger l) {
         logger = l;
@@ -297,7 +303,7 @@ public class TransitionSystem implements Serializable {
                 try {
                     content = ASSyntax.parseTerm(m.getPropCont().toString());
                 } catch (ParseException e) {
-                    //logger.warning("The content of the message '"+m.getPropCont()+"' is not a term! Using ObjectTerm.");
+                    //logger.warn("The content of the message '"+m.getPropCont()+"' is not a term! Using ObjectTerm.");
                     content = new ObjectTermImpl(m.getPropCont());
                     //return;
                 }
@@ -396,7 +402,7 @@ public class TransitionSystem implements Serializable {
                         updateEvents(new Event(new Trigger(TEOperator.add, TEType.achieve, received), Intention.EmptyInt));
                     }
                 } else {
-                    logger.fine("Ignoring message "+m+" because it is received after the timeout.");
+                    logger.debug("Ignoring message "+m+" because it is received after the timeout.");
                 }
             }
         }
@@ -432,8 +438,8 @@ public class TransitionSystem implements Serializable {
         if (C.hasEvent()) {
             // Rule SelEv1
             C.SE = ag.selectEvent(C.getEvents());
-            if (logger.isLoggable(Level.FINE))
-                logger.fine("Selected event "+C.SE);
+            if (logger.isDebugEnabled())
+                logger.debug("Selected event "+C.SE);
             if (C.SE != null) {
 
                 // update (external) events (+ and -) are copied for all intentions interested on them (new JasonER)
@@ -579,22 +585,27 @@ public class TransitionSystem implements Serializable {
             // can't carry on, no relevant/applicable plan.
             try {
                 if (C.SE.getIntention() != null && C.SE.getIntention().size() > 3000) {
-                    logger.warning("we are likely in a problem with event "+C.SE.getTrigger()+" the intention stack has already "+C.SE.getIntention().size()+" intended means!");
+                    logger.warn("we are likely in a problem with event "+C.SE.getTrigger()+" the intention stack has already "+C.SE.getIntention().size()+" intended means!");
                 }
                 String msg = "Found a goal for which there is no "+m+" plan: " + C.SE.getTrigger();
                 if (!generateGoalDeletionFromEvent(JasonException.createBasicErrorAnnots("no_"+m, msg), ASSyntax.createAtom("no_"+m+"_plan"))) {
-                    logger.warning(msg);
+                    logger.warn(msg);
 
                     // show details of evaluation of each candidate plan
                     if (C.RP != null) {
-                        Level oldLevel = ag.getLogger().getLevel();
+                        
+                    	// TODO: do we need this now that we're switching to slf4j?
+                    	/* 
+                    	Level oldLevel = ag.getLogger().getLevel();
                         ag.getLogger().setLevel(Level.FINE);
+                        */
+                    	
                         for (Option o: C.RP) {
                             if (o.getUnifier() == null) {
-                                ag.getLogger().fine("Plan @"+o.getPlan().getLabel()+" "+o.getPlan().getTrigger());
-                                ag.getLogger().fine("     |> not relevant");
+                                ag.getLogger().debug("Plan @"+o.getPlan().getLabel()+" "+o.getPlan().getTrigger());
+                                ag.getLogger().debug("     |> not relevant");
                             } else {
-                                ag.getLogger().fine("Plan @"+o.getPlan().getLabel()+" "+o.getPlan().getTrigger() + " : " + o.getPlan().getContext()+ " -- "+ o.getUnifier());
+                                ag.getLogger().debug("Plan @"+o.getPlan().getLabel()+" "+o.getPlan().getTrigger() + " : " + o.getPlan().getContext()+ " -- "+ o.getUnifier());
                                 LogicalFormula context = o.getPlan().getContext();
                                 Iterator<Unifier> r = context.logicalConsequence(ag, o.getUnifier());
                                 while (r != null && r.hasNext()) {
@@ -602,7 +613,9 @@ public class TransitionSystem implements Serializable {
                                 }
                             }
                         }
-                        ag.getLogger().setLevel(oldLevel);
+                        
+                        // TODO: do we need this now that we're switching to slf4j?
+                        // ag.getLogger().setLevel(oldLevel);
                     }
                 }
             } catch (Exception e) {
@@ -640,9 +653,9 @@ public class TransitionSystem implements Serializable {
 
         if (C.SO != null) {
             stepDeliberate = State.AddIM;
-            if (logger.isLoggable(Level.FINE)) logger.fine("Selected option "+C.SO+" for event "+C.SE);
+            if (logger.isDebugEnabled()) logger.debug("Selected option "+C.SO+" for event "+C.SE);
         } else {
-            logger.fine("** selectOption returned null!");
+            logger.debug("** selectOption returned null!");
             generateGoalDeletionFromEvent(JasonException.createBasicErrorAnnots("no_option", "selectOption returned null"), ASSyntax.createAtom("no_option"));
             // can't carry on, no applicable plan.
             stepDeliberate = State.ProcAct;
@@ -849,7 +862,7 @@ public class TransitionSystem implements Serializable {
         if (!C.isAtomicIntentionSuspended() && C.hasRunningIntention()) { // the isAtomicIntentionSuspended is necessary because the atomic intention may be suspended (the above removeAtomicInt returns null in that case)
             // but no other intention could be selected
             C.SI = ag.selectIntention(C.getRunningIntentions());
-            if (logger.isLoggable(Level.FINE)) logger.fine("Selected intention "+C.SI);
+            if (logger.isDebugEnabled()) logger.debug("Selected intention "+C.SI);
             if (C.SI != null) { // the selectIntention function returned null
                 return;
             }
@@ -890,14 +903,14 @@ public class TransitionSystem implements Serializable {
             if (bTerm.isVar()) { // the case of !A with A not ground
                 String msg = h.getSrcInfo()+": "+ "Variable '"+bTerm+"' must be ground.";
                 if (!generateGoalDeletion(curInt, JasonException.createBasicErrorAnnots("body_var_without_value", msg), null))
-                    logger.log(Level.SEVERE, msg);
+                    logger.error( msg);
                 return;
             }
             if (bTerm.isPlanBody()) {
                 if (h.getBodyType() != BodyType.action) { // the case of ...; A = { !g }; +g; ....
                     String msg = h.getSrcInfo()+": "+ "The operator '"+h.getBodyType()+"' is lost with the variable '"+bTerm+"' unified with a plan body. ";
                     if (!generateGoalDeletion(curInt, JasonException.createBasicErrorAnnots("body_var_with_op", msg), null))
-                        logger.log(Level.SEVERE, msg);
+                        logger.error( msg);
                     return;
                 }
             }
@@ -909,7 +922,7 @@ public class TransitionSystem implements Serializable {
                 // var is not literal, so can not be used for most of the deeds
                 String msg = h.getSrcInfo()+": "+ "Variable '"+h.getBodyTerm()+"' must be a Literal and not '"+bTerm+"' to be used in '"+h+"'.";
                 if (!generateGoalDeletion(curInt, JasonException.createBasicErrorAnnots("body_var_not_literal", msg), null))
-                    logger.log(Level.SEVERE, msg);
+                    logger.error( msg);
                 return;
             }
         }
@@ -977,21 +990,21 @@ public class TransitionSystem implements Serializable {
                 e = new NoValueException(msg);
                 errorAnnots = e.getErrorTerms();
                 if (!generateGoalDeletion(curInt, errorAnnots, ASSyntax.createAtom("ia_failed")))
-                    logger.log(Level.SEVERE, body.getErrorMsg()+": "+ e.getMessage());
+                    logger.error( body.getErrorMsg()+": "+ e.getMessage());
                 ok = true; // just to not generate the event again
 
             } catch (JasonException e) {
                 errorAnnots = e.getErrorTerms();
                 if (!generateGoalDeletion(curInt, errorAnnots, ASSyntax.createAtom("ia_failed")))
-                    logger.log(Level.SEVERE, body.getErrorMsg()+": "+ e.getMessage());
+                    logger.error( body.getErrorMsg()+": "+ e.getMessage());
                 ok = true; // just to not generate the event again
             } catch (Exception e) {
                 if (body == null)
-                    logger.log(Level.SEVERE, "Selected an intention with null body in '"+h+"' and IM "+im, e);
+                    logger.error( "Selected an intention with null body in '"+h+"' and IM "+im, e);
                 else
-                    logger.log(Level.SEVERE, body.getErrorMsg()+": "+ e.getMessage(), e);
+                    logger.error( body.getErrorMsg()+": "+ e.getMessage(), e);
             } catch (Error e) {
-                logger.log(Level.SEVERE, body.getErrorMsg()+": "+ e.getMessage(), e);
+                logger.error( body.getErrorMsg()+": "+ e.getMessage(), e);
             }
             if (!ok)
                 generateGoalDeletion(curInt, errorAnnots, ASSyntax.createAtom("ia_failed"));
@@ -1006,7 +1019,7 @@ public class TransitionSystem implements Serializable {
             } else {
                 String msg = "Constraint "+h+" was not satisfied ("+h.getSrcInfo()+") un="+u;
                 generateGoalDeletion(curInt, JasonException.createBasicErrorAnnots(ASSyntax.createAtom("constraint_failed"), msg), ASSyntax.createAtom("constraint_failed"));
-                logger.fine(msg);
+                logger.debug(msg);
             }
             break;
 
@@ -1040,7 +1053,7 @@ public class TransitionSystem implements Serializable {
                         Trigger te = new Trigger(TEOperator.add, TEType.test, body);
                         evt = new Event(te, curInt);
                         if (ag.getPL().hasCandidatePlan(te)) {
-                            if (logger.isLoggable(Level.FINE)) logger.fine("Test Goal '" + bTerm + "' failed as simple query. Generating internal event for it: "+te);
+                            if (logger.isDebugEnabled()) logger.debug("Test Goal '" + bTerm + "' failed as simple query. Generating internal event for it: "+te);
                             C.addEvent(evt);
                             stepAct = State.StartRC;
                             fail = false;
@@ -1048,7 +1061,7 @@ public class TransitionSystem implements Serializable {
                     }
                 }
                 if (fail) {
-                    if (logger.isLoggable(Level.FINE)) logger.fine("Test '"+bTerm+"' failed ("+h.getSrcInfo()+").");
+                    if (logger.isDebugEnabled()) logger.debug("Test '"+bTerm+"' failed ("+h.getSrcInfo()+").");
                     generateGoalDeletion(curInt, JasonException.createBasicErrorAnnots("test_goal_failed", "Failed to test '"+bTerm+"'"), ASSyntax.createAtom("test_goal_failed"));
                 }
             }
@@ -1164,7 +1177,7 @@ public class TransitionSystem implements Serializable {
                         try {
                             adds.put((VarTerm)t,renamedVars.function.get(v));
                         } catch (Exception e) {
-                            logger.log(Level.SEVERE, "*** Error adding var into renamed vars. var="+v+", value="+t+".", e);
+                            logger.error( "*** Error adding var into renamed vars. var="+v+", value="+t+".", e);
                         }
                     }
                 }
@@ -1212,8 +1225,8 @@ public class TransitionSystem implements Serializable {
             IntendedMeans topIM = i.pop();
             Trigger topTrigger = topIM.getTrigger();
             Literal topLiteral = topTrigger.getLiteral();
-            if (logger.isLoggable(Level.FINE))
-                logger.fine("Returning from IM "+topIM.getPlan().getLabel()+", te="+topTrigger+" unif="+topIM.unif);
+            if (logger.isDebugEnabled())
+                logger.debug("Returning from IM "+topIM.getPlan().getLabel()+", te="+topTrigger+" unif="+topIM.unif);
 
             // produce ^!g[state(finished)[reason(achieved)]] event
             if (!topTrigger.isMetaEvent() && topTrigger.isGoal() && hasGoalListener()) {
@@ -1351,14 +1364,14 @@ public class TransitionSystem implements Serializable {
 
                 for (Option opt: rp) {
                     LogicalFormula context = opt.getPlan().getContext();
-                    if (getLogger().isLoggable(Level.FINE))
-                        getLogger().log(Level.FINE, "option for "+C.SE.getTrigger()+" is plan "+opt.getPlan().getLabel() + " " + opt.getPlan().getTrigger() + " : " + context + " -- with unification "+opt.getUnifier());
+                    if (getLogger().isDebugEnabled())
+                        getLogger().debug( "option for "+C.SE.getTrigger()+" is plan "+opt.getPlan().getLabel() + " " + opt.getPlan().getTrigger() + " : " + context + " -- with unification "+opt.getUnifier());
 
                     if (context == null) { // context is true
                         if (ap == null) ap = new LinkedList<>();
                         ap.add(opt);
-                        if (getLogger().isLoggable(Level.FINE))
-                            getLogger().log(Level.FINE, "     "+opt.getPlan().getLabel() + " is applicable with unification "+opt.getUnifier());
+                        if (getLogger().isDebugEnabled())
+                            getLogger().debug( "     "+opt.getPlan().getLabel() + " is applicable with unification "+opt.getUnifier());
                     } else {
                         boolean allUnifs = opt.getPlan().isAllUnifs();
 
@@ -1373,8 +1386,8 @@ public class TransitionSystem implements Serializable {
                                 if (ap == null) ap = new LinkedList<>();
                                 ap.add(opt);
 
-                                if (getLogger().isLoggable(Level.FINE))
-                                    getLogger().log(Level.FINE, "     "+opt.getPlan().getLabel() + " is applicable with unification "+opt.getUnifier());
+                                if (getLogger().isDebugEnabled())
+                                    getLogger().debug( "     "+opt.getPlan().getLabel() + " is applicable with unification "+opt.getUnifier());
 
                                 if (!allUnifs) break; // returns only the first unification
                                 if (r.hasNext()) {
@@ -1384,8 +1397,8 @@ public class TransitionSystem implements Serializable {
                             }
                         }
 
-                        if (!isApplicable && getLogger().isLoggable(Level.FINE))
-                            getLogger().log(Level.FINE, "     "+opt.getPlan().getLabel() + " is not applicable");
+                        if (!isApplicable && getLogger().isDebugEnabled())
+                            getLogger().debug( "     "+opt.getPlan().getLabel() + " is not applicable");
                     }
                 }
             }
@@ -1424,7 +1437,7 @@ public class TransitionSystem implements Serializable {
         //if (e.isInternal() || C.hasListener() || ag.getPL().hasCandidatePlan(e.trigger)) {
         // complex to optimise (the above if) in JasonER. removed until we have a good implementation
             C.addEvent(e);
-            if (logger.isLoggable(Level.FINE)) logger.fine("Added event " + e+ ", events = "+C.getEvents());
+            if (logger.isDebugEnabled()) logger.debug("Added event " + e+ ", events = "+C.getEvents());
         //}
     }
 
@@ -1434,7 +1447,7 @@ public class TransitionSystem implements Serializable {
             i.peek().removeCurrentStep();
             C.addRunningIntention(i);
         } else {
-            logger.fine("trying to update a finished intention!");
+            logger.debug("trying to update a finished intention!");
         }
     }
 
@@ -1474,9 +1487,9 @@ public class TransitionSystem implements Serializable {
 
             if (failEventIsRelevant) {
                 C.addEvent(failEvent);
-                if (logger.isLoggable(Level.FINE)) logger.fine("Generating goal deletion " + failEvent.getTrigger() + " from goal: " + im.getTrigger());
+                if (logger.isDebugEnabled()) logger.debug("Generating goal deletion " + failEvent.getTrigger() + " from goal: " + im.getTrigger());
             } else {
-                logger.warning("No failure event was generated for " + failEvent.getTrigger() + "\n"+i);
+                logger.warn("No failure event was generated for " + failEvent.getTrigger() + "\n"+i);
                 i.fail(getC());
             }
         }
@@ -1488,7 +1501,7 @@ public class TransitionSystem implements Serializable {
             im = i.peek(); //get(0);
             C.addExternalEv(im.getTrigger());
         } else {
-            logger.warning("Could not finish intention: " + i + "\tTrigger: " + failEvent.getTrigger());
+            logger.warn("Could not finish intention: " + i + "\tTrigger: " + failEvent.getTrigger());
         }
         return failEventIsRelevant;
     }
@@ -1497,7 +1510,7 @@ public class TransitionSystem implements Serializable {
     private boolean generateGoalDeletionFromEvent(List<Term> failAnnots, Term reason) throws JasonException {
         Event ev = C.SE;
         if (ev == null) {
-            logger.warning("** It was impossible to generate a goal deletion event because SE is null! " + C);
+            logger.warn("** It was impossible to generate a goal deletion event because SE is null! " + C);
             return false;
         }
 
@@ -1511,12 +1524,12 @@ public class TransitionSystem implements Serializable {
                 setDefaultFailureAnnots(failEvent, tevent.getLiteral(), failAnnots);
                 C.addEvent(failEvent);
                 failEeventGenerated = true;
-                //logger.warning("Generating goal deletion " + failEvent.getTrigger() + " from event: " + ev.getTrigger());
+                //logger.warn("Generating goal deletion " + failEvent.getTrigger() + " from event: " + ev.getTrigger());
             } else {
-                logger.warning("No fail event was generated for " + ev.getTrigger());
+                logger.warn("No fail event was generated for " + ev.getTrigger());
                 if (ev.intention != null) {
                     ev.intention.fail(getC());
-                    logger.warning("\n"+ev.intention);
+                    logger.warn("\n"+ev.intention);
                 }
             }
 
@@ -1536,15 +1549,15 @@ public class TransitionSystem implements Serializable {
                 }
 
         } else if (ev.isInternal()) {
-            logger.warning("Could not finish intention:\n" + ev.intention);
+            logger.warn("Could not finish intention:\n" + ev.intention);
         }
         // if "discard" is set, we are deleting the whole intention!
         // it is simply not going back to I nor anywhere else!
         else if (setts.requeue()) {
             C.addEvent(ev);
-            logger.warning("Requeing external event: " + ev);
+            logger.warn("Requeing external event: " + ev);
         } else
-            logger.warning("Discarding external event: " + ev);
+            logger.warn("Discarding external event: " + ev);
         return failEeventGenerated;
     }
 
@@ -1676,7 +1689,7 @@ public class TransitionSystem implements Serializable {
 
     public void sense() {
         try {
-            if (logger.isLoggable(Level.FINE)) logger.fine("Start sense");
+            if (logger.isDebugEnabled()) logger.debug("Start sense");
 
             C.resetSense();
 
@@ -1708,7 +1721,7 @@ public class TransitionSystem implements Serializable {
             } while (stepSense != State.SelEv && getAgArch().isRunning());
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "*** ERROR in the transition system (sense). "+C+"\nCreating a new C!", e);
+            logger.error( "*** ERROR in the transition system (sense). "+C+"\nCreating a new C!", e);
             C.create();
         }
     }
@@ -1730,7 +1743,7 @@ public class TransitionSystem implements Serializable {
             } while (stepDeliberate != State.ProcAct && getAgArch().isRunning());
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "*** ERROR in the transition system (deliberate). "+C+"\nCreating a new C!", e);
+            logger.error( "*** ERROR in the transition system (deliberate). "+C+"\nCreating a new C!", e);
             C.create();
         }
     }
@@ -1752,14 +1765,14 @@ public class TransitionSystem implements Serializable {
                 getAgArch().act(action); //, C.getFeedbackActionsWrapper());
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "*** ERROR in the transition system (act). "+C+"\nCreating a new C!", e);
+            logger.error( "*** ERROR in the transition system (act). "+C+"\nCreating a new C!", e);
             C.create();
         }
     }
 
     /*
     public boolean reasoningCycle() {
-        if (logger.isLoggable(Level.FINE)) logger.fine("Start new reasoning cycle");
+        if (logger.isDebugEnabled()) logger.debug("Start new reasoning cycle");
         getUserAgArch().reasoningCycleStarting();
       */
     /* used to find bugs (ignore)
@@ -1850,7 +1863,7 @@ public class TransitionSystem implements Serializable {
              }
 
          } catch (Exception e) {
-             logger.log(Level.SEVERE, "*** ERROR in the transition system. "+C+"\nCreating a new C!", e);
+             logger.error( "*** ERROR in the transition system. "+C+"\nCreating a new C!", e);
              C.create();
          }
 

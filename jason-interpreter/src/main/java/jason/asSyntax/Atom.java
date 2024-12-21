@@ -3,8 +3,9 @@ package jason.asSyntax;
 import jason.asSemantics.Unifier;
 
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -15,7 +16,7 @@ import org.w3c.dom.Element;
 public class Atom extends Literal {
 
     private static final long serialVersionUID = 1L;
-    private static Logger logger = Logger.getLogger(Atom.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(Atom.class.getName());
 
     private final String functor; // immutable field
     private final Atom   ns; // name space
@@ -26,7 +27,7 @@ public class Atom extends Literal {
 
     protected Atom(Atom namespace, String functor) {
         if (functor == null)
-            logger.log(Level.WARNING, "The functor of an atom functor should not be null!", new Exception());
+            logger.warn( "The functor of an atom functor should not be null!", new Exception());
         this.functor = functor;
         this.ns      = namespace;
     }

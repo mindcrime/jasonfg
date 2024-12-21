@@ -8,7 +8,7 @@ import javax.swing.JOptionPane;
 
 public class yes_no extends ConcurrentInternalAction {
 
-    private Logger logger = Logger.getLogger("gui."+yes_no.class.getName());
+    private Logger logger = LoggerFactory.getLogger("gui."+yes_no.class.getName());
 
     @Override
     public Object execute(final TransitionSystem ts, Unifier un, final Term[] args) throws Exception {
@@ -31,7 +31,7 @@ public class yes_no extends ConcurrentInternalAction {
 
             return true;
         } catch (Exception e) {
-            logger.warning("Error in internal action 'gui.yes_no'! "+e);
+            logger.warn("Error in internal action 'gui.yes_no'! "+e);
         }
         return false;
     }

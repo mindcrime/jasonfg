@@ -8,7 +8,7 @@ import jason.stdlib.print_unifier;
 import javax.swing.*;
 import java.awt.*;
 import java.net.URI;
-import java.util.logging.Level;
+
 import java.util.logging.LogRecord;
 import java.util.logging.StreamHandler;
 
@@ -23,9 +23,10 @@ public class ReplAgGUI {
     public void init(Agent  ag) {
         this.ag = ag;
         initGui();
-        initLogger();
+        // initLogger();
     }
 
+    /* 
     void initLogger() {
         ag.getTS().getLogger().addHandler( new StreamHandler() {
             @Override
@@ -35,7 +36,8 @@ public class ReplAgGUI {
             }
         });
     }
-
+	*/
+    
     static int lastPos = 30;
 
     void initGui() {
@@ -117,6 +119,11 @@ public class ReplAgGUI {
 
 
     void setVerbose(int v) {
+    	
+    	// TODO: do we need this now that we've switched to slf4j?
+    	
+    	/* 
+    	
         switch (v) {
             case 0:
                 ag.getTS().getLogger().setLevel(Level.SEVERE);
@@ -128,5 +135,8 @@ public class ReplAgGUI {
                 ag.getTS().getLogger().setLevel(Level.FINE);
                 break;
         }
+        
+        */
+    	
     }
 }

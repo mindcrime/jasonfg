@@ -3,7 +3,7 @@ package env;
 import jason.environment.grid.GridWorldModel;
 import jason.environment.grid.Location;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
 
 
 /**
@@ -32,7 +32,7 @@ public class WorldModel extends GridWorldModel {
 
     int                       maxSteps = 0; // number of steps of the simulation
 
-    private Logger            logger   = Logger.getLogger("jasonTeamSimLocal.mas2j." + WorldModel.class.getName());
+    private Logger            logger   = LoggerFactory.getLogger("jasonTeamSimLocal.mas2j." + WorldModel.class.getName());
 
     int agsByTeam = 6;
 
@@ -149,12 +149,12 @@ public class WorldModel extends GridWorldModel {
 
     synchronized public boolean move(Move dir, int ag) throws Exception {
         if (ag < 0) {
-            logger.warning("** Trying to move unknown agent!");
+            logger.warn("** Trying to move unknown agent!");
             return false;
         }
         Location l = getAgPos(ag);
         if (l == null) {
-            logger.warning("** We lost the location of agent " + (ag + 1) + "!"+this);
+            logger.warn("** We lost the location of agent " + (ag + 1) + "!"+this);
             return false;
         }
         Location n = null;
@@ -199,10 +199,10 @@ public class WorldModel extends GridWorldModel {
                 goldsWithAg[ag]++;
                 return true;
             } else {
-                logger.warning("Agent " + (ag + 1) + " is trying the pick gold, but it is already carrying "+(AG_CAPACITY)+" golds!");
+                logger.warn("Agent " + (ag + 1) + " is trying the pick gold, but it is already carrying "+(AG_CAPACITY)+" golds!");
             }
         } else {
-            logger.warning("Agent " + (ag + 1) + " is trying the pick gold, but there is no gold at " + l.x + "x" + l.y + "!");
+            logger.warn("Agent " + (ag + 1) + " is trying the pick gold, but there is no gold at " + l.x + "x" + l.y + "!");
         }
         return false;
     }

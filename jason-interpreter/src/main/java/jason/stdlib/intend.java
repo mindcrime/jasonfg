@@ -160,7 +160,7 @@ public class intend extends DefaultInternalAction {
     // data structures where intentions can be found
     enum Step { selEvt, selInt, evt, pendEvt, pendAct, pendInt, intentions, end }
 
-    //private static Logger logger = Logger.getLogger(intend.class.getName());
+    //private static Logger logger = LoggerFactory.getLogger(intend.class.getName());
 
     public static Iterator<Unifier> allIntentions(final Circumstance C, final Literal l, final Term intAsTerm, final Unifier un) {
         final Trigger g = new Trigger(TEOperator.add, TEType.achieve, l);
@@ -211,7 +211,7 @@ public class intend extends DefaultInternalAction {
                     // we need to check the intention in the selected event in this cycle!!!
                     // (as it was already removed from E)
                     if (C.getSelectedEvent() != null) {
-                        // logger.log(Level.SEVERE,"Int: "+g+" unif "+ts.C.SE);
+                        // logger.error("Int: "+g+" unif "+ts.C.SE);
                         curInt = C.getSelectedEvent().getIntention();
                         if (isSolution())
                             return;

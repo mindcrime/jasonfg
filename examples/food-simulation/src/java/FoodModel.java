@@ -11,7 +11,7 @@ public class FoodModel extends GridWorldModel {
     public static final int MOVING_COST = 1;
     public static final int ATTACK_COST = 4;
 
-    //private Logger logger = Logger.getLogger(FoodModel.class.getName());
+    //private Logger logger = LoggerFactory.getLogger(FoodModel.class.getName());
 
     int[] strengths;
     int[] attacked;

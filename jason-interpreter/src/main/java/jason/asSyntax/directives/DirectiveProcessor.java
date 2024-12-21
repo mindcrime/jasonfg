@@ -2,8 +2,9 @@ package jason.asSyntax.directives;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jason.asSyntax.Pred;
 import jason.asSyntax.patterns.goal.BC;
@@ -28,7 +29,7 @@ import jason.asSyntax.patterns.goal.SMC;
  */
 @SuppressWarnings("rawtypes")
 public class DirectiveProcessor {
-    static Logger logger = Logger.getLogger(DirectiveProcessor.class.getName());
+    static Logger logger = LoggerFactory.getLogger(DirectiveProcessor.class.getName());
 
     private static Map<String,Class> directives = new HashMap<String,Class>();
     private Map<String,Directive> instances  = new HashMap<String,Directive>();
@@ -47,7 +48,7 @@ public class DirectiveProcessor {
         // create the instance
         Class c = directives.get(id);
         if (c == null) {
-            logger.log(Level.SEVERE, "Unknown directive "+id);
+            logger.error( "Unknown directive "+id);
             return null;
         }
 
@@ -100,7 +101,7 @@ public class DirectiveProcessor {
         // create the instance
         Class c = directives.get(id);
         if (c == null) {
-            logger.log(Level.SEVERE, "Unknown directive "+id);
+            logger.error( "Unknown directive "+id);
             return null;
         }
 

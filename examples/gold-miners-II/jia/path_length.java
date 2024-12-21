@@ -8,7 +8,7 @@ import jason.asSyntax.NumberTermImpl;
 import jason.asSyntax.Term;
 import jason.environment.grid.Location;
 
-import java.util.logging.Level;
+
 
 import arch.LocalWorldModel;
 import arch.MinerArch;
@@ -44,7 +44,7 @@ public class path_length extends DefaultInternalAction {
                 }
             }
         } catch (Throwable e) {
-            ts.getLogger().log(Level.SEVERE, "jia.path_length error: "+e, e);
+            ts.getLogger().error( "jia.path_length error: "+e, e);
         }
         return false;
     }

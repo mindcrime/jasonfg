@@ -2,8 +2,9 @@ package jason.asSyntax;
 
 import java.io.Serializable;
 import java.io.StringReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jason.pl.PlanLibrary;
 import org.w3c.dom.Document;
@@ -31,7 +32,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
     private static final Term TBreakPoint     = ASSyntax.createAtom("breakpoint");
     private static final Term TAllUnifs       = ASSyntax.createAtom("all_unifs");
 
-    private static Logger     logger          = Logger.getLogger(Plan.class.getName());
+    private static Logger     logger          = LoggerFactory.getLogger(Plan.class.getName());
 
     private Pred              label  = null;
     private Trigger           tevent = null;
@@ -194,7 +195,7 @@ public class Plan extends Structure implements Cloneable, Serializable {
         try {
             return parser.plan();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error parsing plan " + sPlan, e);
+            logger.error( "Error parsing plan " + sPlan, e);
             return null;
         }
     }

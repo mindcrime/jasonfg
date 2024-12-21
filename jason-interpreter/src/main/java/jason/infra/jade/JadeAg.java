@@ -15,9 +15,9 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of a basic jade agent for jason agents
@@ -36,8 +36,9 @@ public abstract class JadeAg extends Agent {
 
     private static final long serialVersionUID = 1L;
 
-    protected Logger logger = jade.util.Logger.getMyLogger(this.getClass().getName());
-
+    // protected Logger logger = jade.util.Logger.getMyLogger(this.getClass().getName());
+    protected Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+    
     private static int rwid = 0; // reply-with counter
     protected boolean running = true;
 
@@ -66,7 +67,7 @@ public abstract class JadeAg extends Agent {
                 acl.setConversationId(convid);
             }
         }
-        if (logger.isLoggable(Level.FINE)) logger.fine("Sending message: " + acl);
+        if (logger.isDebugEnabled()) logger.debug("Sending message: " + acl);
         send(acl);
     }
 
@@ -79,7 +80,7 @@ public abstract class JadeAg extends Agent {
                     addAllAgsAsReceivers(acl);
                     send(acl);
                 } catch (Exception e) {
-                    logger.log(Level.SEVERE, "Error in broadcast of "+m, e);
+                    logger.error( "Error in broadcast of "+m, e);
                 }
             }
         });
@@ -98,9 +99,9 @@ public abstract class JadeAg extends Agent {
             if (r != null)
                 return r;
             else
-                logger.warning("ask timeout for "+m.getContent());
+                logger.warn("ask timeout for "+m.getContent());
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error waiting message.", e);
+            logger.error( "Error waiting message.", e);
         }
         return null;
     }

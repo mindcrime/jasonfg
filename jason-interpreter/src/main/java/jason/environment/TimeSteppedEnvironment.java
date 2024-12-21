@@ -12,8 +12,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jason.asSyntax.Literal;
 import jason.asSyntax.Structure;
@@ -29,7 +30,7 @@ import jason.asSyntax.Structure;
  */
 public class TimeSteppedEnvironment extends Environment {
 
-    private Logger logger = Logger.getLogger(TimeSteppedEnvironment.class.getName());
+    private Logger logger = LoggerFactory.getLogger(TimeSteppedEnvironment.class.getName());
 
     /** Policy used when a second action is requested and the agent still has another action pending execution */
     public enum OverActionsPolicy {
@@ -72,7 +73,7 @@ public class TimeSteppedEnvironment extends Environment {
             try {
                 stepTimeout = Integer.parseInt(args[0]);
             } catch (Exception e) {
-                logger.warning("The argument "+args[0]+" is not a valid number for step timeout");
+                logger.warn("The argument "+args[0]+" is not a valid number for step timeout");
             }
         }
 
@@ -170,7 +171,7 @@ public class TimeSteppedEnvironment extends Environment {
             // if the agent already has an action scheduled, fail the first
             ActRequest inSchedule = requests.get(agName);
             if (inSchedule != null) {
-                logger.fine("Agent " + agName + " scheduled the additional action '" + action.toString() + "' in an "
+                logger.debug("Agent " + agName + " scheduled the additional action '" + action.toString() + "' in an "
                         + "occupied time step. Policy: " + overActPol.name());
                 if (overActPol == OverActionsPolicy.queue) {
                     overRequests.offer(newRequest);
@@ -284,7 +285,7 @@ public class TimeSteppedEnvironment extends Environment {
                 stepStarted(step);
             } catch (Exception ie) {
                 if (isRunning() && !(ie instanceof InterruptedException)) {
-                    logger.log(Level.WARNING, "act error!",ie);
+                    logger.warn( "act error!",ie);
                 }
             }
         }
@@ -369,7 +370,7 @@ public class TimeSteppedEnvironment extends Environment {
                 }
             } catch (InterruptedException e) {
             } catch (Exception e) {
-                logger.log(Level.SEVERE, "Error in timeout thread!",e);
+                logger.error( "Error in timeout thread!",e);
             }
         }
     }

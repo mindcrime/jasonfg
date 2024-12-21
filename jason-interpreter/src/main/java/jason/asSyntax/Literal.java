@@ -5,8 +5,9 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -50,7 +51,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
 
     @Serial
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = Logger.getLogger(Literal.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(Literal.class.getName());
 
     public static final boolean LPos   = true;
     public static final boolean LNeg   = false;
@@ -67,7 +68,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
             as2j parser = new as2j(new StringReader(sLiteral));
             return parser.literal();
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Error parsing literal " + sLiteral,e);
+            logger.error("Error parsing literal " + sLiteral,e);
             return null;
         }
     }
@@ -248,58 +249,58 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
 
     // structure
     public void addTerm(Term t)              {
-        logger.log(Level.SEVERE, "addTerm is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
+        logger.error( "addTerm is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
     }
     public void delTerm(int index)           {
-        logger.log(Level.SEVERE, "delTerm is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
+        logger.error( "delTerm is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
     }
     /** adds some terms and return this */
     public Literal addTerms(Term ... ts )    {
-        logger.log(Level.SEVERE, "addTerms is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
+        logger.error( "addTerms is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
         return null;
     }
     /** adds some terms and return this */
     public Literal addTerms(List<Term> l)    {
-        logger.log(Level.SEVERE, "addTerms is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
+        logger.error( "addTerms is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
         return null;
     }
     /** returns the i-th term (first term is 0) */
     public Term getTerm(int i)               {
-        logger.log(Level.SEVERE, "getTerm(i) is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
+        logger.error( "getTerm(i) is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
         return null;
     }
     /** set all terms of the literal and return this */
     public Literal setTerms(List<Term> l)    {
-        logger.log(Level.SEVERE, "setTerms is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
+        logger.error( "setTerms is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
         return null;
     }
     public void setTerm(int i, Term t)       {
-        logger.log(Level.SEVERE, "setTerm is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
+        logger.error( "setTerm is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
     }
 
     // pred
     public Literal setAnnots(ListTerm l)     {
-        logger.log(Level.SEVERE, "setAnnots is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
+        logger.error( "setAnnots is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
         return null;
     }
     public boolean addAnnot(Term t)          {
-        logger.log(Level.SEVERE, "addAnnot("+t+") is not implemented in the class "+this.getClass().getSimpleName()+" of object "+this, new Exception());
+        logger.error( "addAnnot("+t+") is not implemented in the class "+this.getClass().getSimpleName()+" of object "+this, new Exception());
         return false;
     }
 
     /** adds some annots and return this */
     public Literal addAnnots(Term ... terms) {
-        logger.log(Level.SEVERE, "addAnnots is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
+        logger.error( "addAnnots is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
         return null;
     }
 
     /** adds some annots and return this */
     public Literal addAnnots(List<Term> l)   {
-        logger.log(Level.SEVERE, "addAnnots is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
+        logger.error( "addAnnots is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
         return null;
     }
     public boolean delAnnot(Term t)          {
-        logger.log(Level.SEVERE, "delAnnot is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
+        logger.error( "delAnnot is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
         return false;
     }
 
@@ -308,12 +309,12 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
      * @return true if some annot was removed.
      */
     public boolean delAnnots(List<Term> l)   {
-        logger.log(Level.SEVERE, "delAnnots is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
+        logger.error( "delAnnots is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
         return false;
     }
 
     public boolean delAnnots()   {
-        logger.log(Level.SEVERE, "delAnnots is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
+        logger.error( "delAnnots is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
         return false;
     }
 
@@ -329,23 +330,23 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
      * @return true if some annot was imported.
      */
     public boolean importAnnots(Literal p)   {
-        logger.log(Level.SEVERE, "importAnnots is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
+        logger.error( "importAnnots is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
         return false;
     }
 
     /** adds the annotation source(<i>agName</i>) */
     public Literal addSource(Term agName)       {
-        logger.log(Level.SEVERE, "("+this+") addSource is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
+        logger.error( "("+this+") addSource is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
         return null;
     }
     /** deletes one source(<i>agName</i>) annotation, return true if deleted */
     public boolean delSource(Term agName)    {
-        logger.log(Level.SEVERE, "delSource is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
+        logger.error( "delSource is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
         return false;
     }
     /** deletes all source annotations */
     public void delSources()                 {
-        logger.log(Level.SEVERE, "delSources is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
+        logger.error( "delSources is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
     }
 
     public Literal noSource() {
@@ -357,7 +358,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
     // literal
     /** changes the negation of the literal and return this */
     public Literal setNegated(boolean b)     {
-        logger.log(Level.SEVERE, "setNegated is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
+        logger.error( "setNegated is not implemented in the class "+this.getClass().getSimpleName(), new Exception());
         return null;
     }
 
@@ -369,11 +370,11 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
      */
     public Iterator<Unifier> logicalConsequence(final Agent ag, final Unifier un) {
 
-    	final boolean isInDebug = ag.getLogger().isLoggable(Level.FINE);
+    	final boolean isInDebug = ag.getLogger().isDebugEnabled();
 
         final Iterator<Literal> il   = ag.getBB().getCandidateBeliefs(this, un);
         if (il == null) { // no relevant bels
-        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | no candidate belief for "+this+" with "+un);
+        	if (isInDebug) ag.getLogger().debug( "     | no candidate belief for "+this+" with "+un);
             return LogExpr.EMPTY_UNIF_LIST.iterator();
         }
 
@@ -420,10 +421,10 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
 	                        Unifier u = un.clone();
 	                        if (u.unifiesNoUndo(Literal.this, belToTry)) {
 	                            current = u;
-	                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | for "+Literal.this+", belief annotation "+belToTry+" is an option -- "+u);
+	                        	if (isInDebug) ag.getLogger().debug( "     | for "+Literal.this+", belief annotation "+belToTry+" is an option -- "+u);
 	                            return;
 	                        } else {
-	                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | for "+Literal.this+", belief annotation "+belToTry+" is NOT an option -- "+u);
+	                        	if (isInDebug) ag.getLogger().debug( "     | for "+Literal.this+", belief annotation "+belToTry+" is NOT an option -- "+u);
 	                        }
 	                    }
 	                    annotsOptions = null;
@@ -443,13 +444,13 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
 	                        Unifier unC = un.clone();
 	                        if (unC.unifiesNoUndo(Literal.this, rhead)) {
 	                            current = unC;
-	                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | for "+Literal.this+", rule "+rhead+" is an option -- "+unC);
+	                        	if (isInDebug) ag.getLogger().debug( "     | for "+Literal.this+", rule "+rhead+" is an option -- "+unC);
 	                            return;
 	                        } else {
-	                        	if (isInDebug) ag.getLogger().log(Level.FINE, "     | for "+Literal.this+", rule "+rhead+" is NOT an option -- "+unC);
+	                        	if (isInDebug) ag.getLogger().debug( "     | for "+Literal.this+", rule "+rhead+" is NOT an option -- "+unC);
 	                        }
 	                    }
-                    	//if (isInDebug) ag.getLogger().log(Level.FINE, "     | rule "+rule+" has NO more options for "+ Literal.this);
+                    	//if (isInDebug) ag.getLogger().debug( "     | rule "+rule+" has NO more options for "+ Literal.this);
 	                    ruleIt = null;
 	                }
 
@@ -469,7 +470,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
 	                        }
 	                        Unifier ruleUn = new Unifier();
 	                        if (ruleUn.unifiesNoUndo(cloneAnnon, rule)) { // the rule head unifies with the literal
-                            	if (isInDebug) ag.getLogger().log(Level.FINE, "     | for "+cloneAnnon+", rule "+rule+" is an option -- "+ruleUn);
+                            	if (isInDebug) ag.getLogger().debug( "     | for "+cloneAnnon+", rule "+rule+" is an option -- "+ruleUn);
 
 	                            ruleIt = rule.getBody().logicalConsequence(ag,ruleUn);
 	                            //get(); // just to avoid a bit of recursion, I am using goto
@@ -477,7 +478,7 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
 	                            //if (current != null) // if it get a value
 	                            //    return;
 	                        } else {
-                            	if (isInDebug) ag.getLogger().log(Level.FINE, "     | for "+cloneAnnon+", rule "+rule+" is an NOT option -- "+ruleUn);
+                            	if (isInDebug) ag.getLogger().debug( "     | for "+cloneAnnon+", rule "+rule+" is an NOT option -- "+ruleUn);
 	                        }
 	                    } else { // not rule
 	                        if (nbAnnots > 0) { // try annots backtracking
@@ -494,16 +495,16 @@ public abstract class Literal extends DefaultTerm implements LogicalFormula {
 	                        } else { // it is an ordinary query on a belief
 	                            Unifier u = un.clone();
 	                            if (u.unifiesNoUndo(Literal.this, belInBB)) {
-	                            	if (isInDebug) ag.getLogger().log(Level.FINE, "     | for "+Literal.this+", belief "+belInBB+" is an option -- "+u);
+	                            	if (isInDebug) ag.getLogger().debug( "     | for "+Literal.this+", belief "+belInBB+" is an option -- "+u);
 	                                current = u;
 	                                return;
 	                            //} else {
-	                            	//if (isInDebug) ag.getLogger().log(Level.FINE, "     | belief "+belInBB+" is NOT an option for "+ Literal.this+ " -- "+u);
+	                            	//if (isInDebug) ag.getLogger().debug( "     | belief "+belInBB+" is NOT an option for "+ Literal.this+ " -- "+u);
 	                            }
 	                        }
 	                    }
 	                }
-                	if (isInDebug) ag.getLogger().log(Level.FINE, "     | NO more options for "+ Literal.this);
+                	if (isInDebug) ag.getLogger().debug( "     | NO more options for "+ Literal.this);
 	                break; // do not repeat! the loop is used by 'continue' only
                 } // while
             }

@@ -9,8 +9,9 @@ import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Represents a MAS2J project (usually created from a .mas2j file)
@@ -22,7 +23,7 @@ public class MAS2JProject implements Serializable {
     public static final String EXT       = "mas2j";
     public static final String AS_EXT    = "asl";
 
-    private static Logger logger = Logger.getLogger(MAS2JProject.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(MAS2JProject.class.getName());
 
     private String soc = "default";
     private ClassParameters envClass = null;
@@ -40,7 +41,7 @@ public class MAS2JProject implements Serializable {
             jason.mas2j.parser.mas2j parser = new jason.mas2j.parser.mas2j(new FileReader(file));
             return parser.mas();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error parsing mas2j file.", e);
+            logger.error( "Error parsing mas2j file.", e);
             return null;
         }
     }
@@ -183,7 +184,7 @@ public class MAS2JProject implements Serializable {
                 try {
                     DirectiveProcessor.registerDirective(id, Class.forName(directiveClasses.get(id)));
                 } catch (Exception e) {
-                    logger.log(Level.SEVERE, "Error registering directives "+directiveClasses,e);
+                    logger.error( "Error registering directives "+directiveClasses,e);
                 }
             }
         }

@@ -5,7 +5,7 @@ import jason.environment.grid.Location;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
 
 import mining.MiningPlanet.Move;
 
@@ -20,7 +20,7 @@ public class WorldModel extends GridWorldModel {
     int                       goldsInDepot   = 0;
     int                       initialNbGolds = 0;
 
-    private Logger            logger   = Logger.getLogger("jasonTeamSimLocal.mas2j." + WorldModel.class.getName());
+    private Logger            logger   = LoggerFactory.getLogger("jasonTeamSimLocal.mas2j." + WorldModel.class.getName());
 
     private String            id = "WorldModel";
 
@@ -130,10 +130,10 @@ public class WorldModel extends GridWorldModel {
                 setAgCarryingGold(ag);
                 return true;
             } else {
-                logger.warning("Agent " + (ag + 1) + " is trying the pick gold, but it is already carrying gold!");
+                logger.warn("Agent " + (ag + 1) + " is trying the pick gold, but it is already carrying gold!");
             }
         } else {
-            logger.warning("Agent " + (ag + 1) + " is trying the pick gold, but there is no gold at " + l.x + "x" + l.y + "!");
+            logger.warn("Agent " + (ag + 1) + " is trying the pick gold, but there is no gold at " + l.x + "x" + l.y + "!");
         }
         return false;
     }

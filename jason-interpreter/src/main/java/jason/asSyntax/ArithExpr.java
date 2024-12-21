@@ -1,8 +1,9 @@
 package jason.asSyntax;
 
 import java.io.StringReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -18,7 +19,7 @@ import jason.asSyntax.parser.as2j;
 public class ArithExpr extends ArithFunctionTerm implements NumberTerm {
 
     private static final long serialVersionUID = 1L;
-    private static Logger logger = Logger.getLogger(ArithExpr.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(ArithExpr.class.getName());
 
     public enum ArithmeticOp {
         none {
@@ -135,7 +136,7 @@ public class ArithExpr extends ArithFunctionTerm implements NumberTerm {
         try {
             return (NumberTerm) parser.arithm_expr();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error parsing expression " + sExpr, e);
+            logger.error( "Error parsing expression " + sExpr, e);
             return null;
         }
     }
@@ -156,7 +157,7 @@ public class ArithExpr extends ArithFunctionTerm implements NumberTerm {
             }
             return value;
         } catch (ClassCastException e) {
-            logger.warning("The value of "+this+" is not a number! Unifier = "+u+". Code: "+getSrcInfo());
+            logger.warn("The value of "+this+" is not a number! Unifier = "+u+". Code: "+getSrcInfo());
             return new NumberTermImpl(Double.NaN);
         } catch (NoValueException e) {
             return clone();

@@ -2,7 +2,7 @@ package arch;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.logging.Level;
+
 
 import jason.asSyntax.Literal;
 import jason.asSyntax.NumberTerm;
@@ -86,7 +86,7 @@ public class LocalMinerArch extends MinerArch {
                 }
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error in perceive!", e);
+            logger.error( "Error in perceive!", e);
         }
         return per;
     }

@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -20,7 +21,7 @@ import jason.asSyntax.parser.as2j;
 public class Pred extends Structure {
 
     private static final long serialVersionUID = 1L;
-    private static Logger logger = Logger.getLogger(Pred.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(Pred.class.getName());
 
     private ListTerm      annots;
 
@@ -65,7 +66,7 @@ public class Pred extends Structure {
         try {
             return parser.pred();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error parsing predicate " + spread, e);
+            logger.error( "Error parsing predicate " + spread, e);
             return null;
         }
     }

@@ -42,8 +42,13 @@ public class verbose extends DefaultInternalAction {
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
         Settings stts = ts.getSettings();
         stts.setVerbose( (int)((NumberTerm)args[0]).solve() );
+        
+        // TODO: do we need this now that we've switched to slf4j?
+        /* 
         ts.getAg().getLogger().setLevel(stts.logLevel());
         ts.getLogger().setLevel(stts.logLevel());
+        */
+        
         return true;
     }
 }

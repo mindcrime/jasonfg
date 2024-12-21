@@ -19,7 +19,7 @@ public class LocalWorldModel extends WorldModel {
 
     private Random            random = new Random();
 
-    //private Logger            logger   = Logger.getLogger("jasonTeamSimLocal.mas2j." + LocalWorldModel.class.getName());
+    //private Logger            logger   = LoggerFactory.getLogger("jasonTeamSimLocal.mas2j." + LocalWorldModel.class.getName());
 
     public static LocalWorldModel create(int w, int h, int nbAg) {
         return new LocalWorldModel(w,h,nbAg);

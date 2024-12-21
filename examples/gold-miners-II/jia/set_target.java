@@ -7,7 +7,7 @@ import jason.asSyntax.NumberTerm;
 import jason.asSyntax.Term;
 import jason.environment.grid.Location;
 
-import java.util.logging.Level;
+
 
 import env.WorldModel;
 
@@ -22,7 +22,7 @@ public class set_target extends DefaultInternalAction {
         try {
             WorldModel model = ((MinerArch)ts.getUserAgArch()).getModel();
             if (model == null) {
-                ts.getLogger().log(Level.SEVERE, "no model to get near_least_visited!");
+                ts.getLogger().error( "no model to get near_least_visited!");
             } else {
                 if (oldTarget != null && model.inGrid(oldTarget)) {
                     model.remove(WorldModel.TARGET, oldTarget);
@@ -37,7 +37,7 @@ public class set_target extends DefaultInternalAction {
             }
             return true;
         } catch (Throwable e) {
-            ts.getLogger().log(Level.SEVERE, "jia.set_target error: "+e, e);
+            ts.getLogger().error( "jia.set_target error: "+e, e);
         }
         return false;
     }

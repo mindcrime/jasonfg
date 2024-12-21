@@ -13,7 +13,8 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation of Jason BB.
@@ -22,7 +23,7 @@ public class DefaultBeliefBase extends BeliefBase implements Serializable {
 
     private static final long serialVersionUID = 4189725430351480996L;
 
-    private static Logger logger = Logger.getLogger(DefaultBeliefBase.class.getSimpleName());
+    private static Logger logger = LoggerFactory.getLogger(DefaultBeliefBase.class.getSimpleName());
 
     /**
      * belsMap is a table where the key is the bel.getFunctorArity and the value
@@ -44,7 +45,7 @@ public class DefaultBeliefBase extends BeliefBase implements Serializable {
     @Override
     public void init(Agent ag, String[] args) {
         if (ag != null) {
-            logger = Logger.getLogger(ag.getTS().getAgArch().getAgName() + "-"+DefaultBeliefBase.class.getSimpleName());
+            logger = LoggerFactory.getLogger(ag.getTS().getAgArch().getAgName() + "-"+DefaultBeliefBase.class.getSimpleName());
         }
     }
 
@@ -81,7 +82,7 @@ public class DefaultBeliefBase extends BeliefBase implements Serializable {
             }
             public void remove() {
                 if (current == null) {
-                    logger.warning("Trying to remove a perception, but the the next() from the iterator is not called before!");
+                    logger.warn("Trying to remove a perception, but the the next() from the iterator is not called before!");
                 }
                 // remove from percepts
                 i.remove();

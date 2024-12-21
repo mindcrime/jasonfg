@@ -16,13 +16,14 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** This class implements the Local version of the runtime services. */
 public class LocalRuntimeServices extends BaseRuntimeServices {
 
-    private static final Logger logger = Logger.getLogger(LocalRuntimeServices.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(LocalRuntimeServices.class.getName());
 
     public LocalRuntimeServices(BaseLocalMAS masRunner) {
         super(masRunner);
@@ -41,8 +42,8 @@ public class LocalRuntimeServices extends BaseRuntimeServices {
         if (!isRunning())
             return "system.not.running";
 
-        if (logger.isLoggable(Level.FINE))
-            logger.fine("Creating local agent " + agName + " from source " + agSource + " (agClass=" + agClass + ", archClass=" + archClasses + ", settings=" + stts);
+        if (logger.isDebugEnabled())
+            logger.debug("Creating local agent " + agName + " from source " + agSource + " (agClass=" + agClass + ", archClass=" + archClasses + ", settings=" + stts);
 
         AgentParameters ap = new AgentParameters();
         ap.setAgClass(agClass);
@@ -80,15 +81,19 @@ public class LocalRuntimeServices extends BaseRuntimeServices {
             if (masRunner.isDebug()) {
                 stts.setVerbose(2);
                 stts.setSync(true);
+                
+                // TODO: do we need this now that we've switched to slf4j?
+                /* 
                 agArch.getLogger().setLevel(Level.FINE);
                 agArch.getTS().getLogger().setLevel(Level.FINE);
                 agArch.getTS().getAg().getLogger().setLevel(Level.FINE);
+                */
             }
 
             masRunner.addAg(agArch);
         }
 
-        logger.fine("Agent " + agName + " created!");
+        logger.debug("Agent " + agName + " created!");
         return agName;
     }
 
@@ -118,7 +123,7 @@ public class LocalRuntimeServices extends BaseRuntimeServices {
 
     @Override
     public boolean killAgent(String agName, String byAg, int deadline) {
-        logger.fine("Killing local agent " + agName);
+        logger.debug("Killing local agent " + agName);
         LocalAgArch ag = masRunner.getAg(agName);
         if (ag != null && ag.getTS().getAg().killAcc(byAg)) {
             new Thread(() -> {

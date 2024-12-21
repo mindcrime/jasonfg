@@ -8,7 +8,7 @@ import jason.asSyntax.NumberTermImpl;
 import jason.asSyntax.Term;
 import jason.environment.grid.Location;
 
-import java.util.logging.Level;
+
 
 import arch.LocalWorldModel;
 import arch.MinerArch;
@@ -27,7 +27,7 @@ public class near_least_visited extends DefaultInternalAction {
         try {
             LocalWorldModel model = ((MinerArch)ts.getUserAgArch()).getModel();
             if (model == null) {
-                ts.getLogger().log(Level.SEVERE, "no model to get near_least_visited!");
+                ts.getLogger().error( "no model to get near_least_visited!");
             } else {
                 NumberTerm agx = (NumberTerm)terms[0];
                 NumberTerm agy = (NumberTerm)terms[1];
@@ -38,7 +38,7 @@ public class near_least_visited extends DefaultInternalAction {
                 return true;
             }
         } catch (Throwable e) {
-            ts.getLogger().log(Level.SEVERE, "near_least_visited error: "+e, e);
+            ts.getLogger().error( "near_least_visited error: "+e, e);
         }
         return false;
     }

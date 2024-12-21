@@ -3,8 +3,9 @@ package jason.asSyntax;
 import java.io.Serial;
 import java.io.StringReader;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.stream.Collectors;
 
 import org.w3c.dom.Document;
@@ -24,7 +25,7 @@ public class Structure extends Atom {
 
     @Serial
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = Logger.getLogger(Structure.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(Structure.class.getName());
 
     protected static final List<Term> emptyTermList  = new ArrayList<>(0);
     protected static final Term[]     emptyTermArray = new Term[0]; // just to have a type for toArray in the getTermsArray method
@@ -92,7 +93,7 @@ public class Structure extends Atom {
             else
                 return new Structure((Atom)t);
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Error parsing structure " + sTerm,e);
+            logger.error("Error parsing structure " + sTerm,e);
             return null;
         }
     }

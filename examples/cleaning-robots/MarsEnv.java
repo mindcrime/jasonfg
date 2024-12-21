@@ -8,7 +8,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.util.Random;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
 
 public class MarsEnv extends Environment {
 
@@ -22,7 +22,7 @@ public class MarsEnv extends Environment {
     public static final Literal g1 = Literal.parseLiteral("garbage(r1)");
     public static final Literal g2 = Literal.parseLiteral("garbage(r2)");
 
-    static Logger logger = Logger.getLogger(MarsEnv.class.getName());
+    static Logger logger = LoggerFactory.getLogger(MarsEnv.class.getName());
 
     private MarsModel model;
     private MarsView  view;

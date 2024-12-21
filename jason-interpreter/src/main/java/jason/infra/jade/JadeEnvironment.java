@@ -3,7 +3,7 @@ package jason.infra.jade;
 import java.io.FileReader;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.logging.Level;
+
 
 import jade.core.AID;
 import jade.core.behaviours.CyclicBehaviour;
@@ -44,7 +44,7 @@ public class JadeEnvironment extends JadeAg implements EnvironmentInfraTier {
         // create the user environment
         if (BaseLocalMAS.getRunner() != null)
             BaseLocalMAS.getRunner().setupLogger();
-        logger.fine("Starting JadeEnvironment.");
+        logger.debug("Starting JadeEnvironment.");
         try {
             Object[] args = getArguments();
             if (args != null && args.length > 0) {
@@ -59,7 +59,7 @@ public class JadeEnvironment extends JadeAg implements EnvironmentInfraTier {
                     //for (Object o: args) System.out.println("*** "+o);
                     if (args[0].toString().equals("j-project")) { // load parameters from .mas2j
                         if (args.length != 2) {
-                            logger.log(Level.SEVERE, "To start the environment from .mas2j file, you have to provide as parameters: (j-project,<file.mas2j>)");
+                            logger.error( "To start the environment from .mas2j file, you have to provide as parameters: (j-project,<file.mas2j>)");
                             return;
                         }
                         jason.mas2j.parser.mas2j parser = new jason.mas2j.parser.mas2j(new FileReader(args[1].toString()));
@@ -70,7 +70,7 @@ public class JadeEnvironment extends JadeAg implements EnvironmentInfraTier {
                         userEnv = (Environment) Class.forName(ep.getClassName()).getConstructor().newInstance();
                         userEnv.setEnvironmentInfraTier(this);
                         userEnv.init(ep.getParametersArray());
-                        logger.fine("Init of environmend, via j-project, done.");
+                        logger.debug("Init of environmend, via j-project, done.");
 
                     } else { // assume first parameter as class name, remaining environment args
                         userEnv = (Environment) Class.forName(args[0].toString()).getConstructor().newInstance();
@@ -83,12 +83,12 @@ public class JadeEnvironment extends JadeAg implements EnvironmentInfraTier {
                     }
                 }
             } else {
-                logger.warning("Using default environment.");
+                logger.warn("Using default environment.");
                 userEnv = new Environment();
                 userEnv.setEnvironmentInfraTier(this);
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error in setup Jade Environment", e);
+            logger.error( "Error in setup Jade Environment", e);
         }
 
         // DF register
@@ -101,9 +101,9 @@ public class JadeEnvironment extends JadeAg implements EnvironmentInfraTier {
         try {
             DFService.register(this,dfa);
         } catch (FIPAException e) {
-            logger.log(Level.SEVERE, "Error registering environment in DF", e);
+            logger.error( "Error registering environment in DF", e);
         }
-        logger.fine("Registry in the DF done.");
+        logger.debug("Registry in the DF done.");
 
         try {
             // add a message handler to answer perception asks
@@ -147,10 +147,10 @@ public class JadeEnvironment extends JadeAg implements EnvironmentInfraTier {
                     }
                 }
             });
-            logger.fine("setup done");
+            logger.debug("setup done");
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error starting agent", e);
+            logger.error( "Error starting agent", e);
         }
     }
 
@@ -193,7 +193,7 @@ public class JadeEnvironment extends JadeAg implements EnvironmentInfraTier {
                 send(m);
             }
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Error sending notifyEvents ", e);
+            logger.error( "Error sending notifyEvents ", e);
         }
     }
 

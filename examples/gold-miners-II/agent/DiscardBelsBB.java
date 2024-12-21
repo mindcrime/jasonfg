@@ -17,7 +17,7 @@ import java.util.Set;
  * @author jomi
  */
 public class DiscardBelsBB extends DefaultBeliefBase {
-    //static private Logger logger = Logger.getLogger(UniqueBelsBB.class.getName());
+    //static private Logger logger = LoggerFactory.getLogger(UniqueBelsBB.class.getName());
 
     Set<String> discartedBels = new HashSet<String>();
 

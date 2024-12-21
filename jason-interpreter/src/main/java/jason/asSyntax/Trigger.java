@@ -7,8 +7,9 @@ import jason.asSyntax.parser.as2j;
 import jason.bb.BeliefBase;
 
 import java.io.StringReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -32,7 +33,7 @@ public class Trigger extends Structure implements Cloneable {
 
     private static final long serialVersionUID = 1L;
 
-    private static Logger logger = Logger.getLogger(Trigger.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(Trigger.class.getName());
 
     public enum TEOperator {
         add        { public String toString() {
@@ -86,7 +87,7 @@ public class Trigger extends Structure implements Cloneable {
         try {
             return parser.trigger();
         } catch (Exception e) {
-            logger.log(Level.SEVERE,"Error parsing trigger" + sTe,e);
+            logger.error("Error parsing trigger" + sTe,e);
             return null;
         }
     }
@@ -113,7 +114,7 @@ public class Trigger extends Structure implements Cloneable {
     public void setTerm(int i, Term t) {
         switch (i) {
         case 0:
-            logger.warning("setTerm(i,t) for i=0 -- the operator -- , IS NOT IMPLEMENTED YET!!!");
+            logger.warn("setTerm(i,t) for i=0 -- the operator -- , IS NOT IMPLEMENTED YET!!!");
             break;
         case  1:
             literal = (Literal)t;
