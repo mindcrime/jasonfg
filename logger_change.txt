@@ -1,0 +1,22 @@
+# How to create custom log Appender in SLF4J / Logback
+
+https://www.baeldung.com/custom-logback-appender
+
+#  How to dynamically change log-level at runtime using SLF4J / Logback
+
+https://stackoverflow.com/questions/13442967/how-to-dynamically-change-log-level-in-slf4j-or-log4j
+
+
+# Mapping of the log levels between JUL and SLF4J
+
+https://stackoverflow.com/questions/20795373/how-to-map-levels-of-java-util-logging-and-slf4j-logger
+
+[ALL    -> TRACE]
+FINEST  -> TRACE
+FINER   -> DEBUG
+FINE    -> DEBUG
+[CONFIG -> INFO]
+INFO    -> INFO
+WARNING -> WARN
+SEVERE  -> ERROR
+[OFF    -> ERROR]
