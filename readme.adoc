@@ -1,32 +1,42 @@
-= Jason
+= Jason/FG
 :toc: right
 :icons: font
 :prewrap!:
 
-Jason is an interpreter for an extended version of AgentSpeak. It implements the operational semantics of that language, and provides a platform for the development of multi-agent systems, with many user-customisable features. Jason is available as Open Source, and is distributed under GNU LGPL.
+Jason/FG is an interpreter for an extended version of AgentSpeak. It implements the operational semantics of that language, and provides a platform for the development of multi-agent systems, with many user-customisable features. Jason/FG is available as Open Source, and is distributed under GNU LGPL. Jason/FG is a fork of the original Jason, which is available at https://github.com/jason-lang/jason.
 
-Jason is developed by https://jomifred.github.io[Jomi F. Hübner] and http://www.inf.pucrs.br/r.bordini[Rafael H. Bordini], based on previous work done with many colleagues, in particular Michael Fisher, Joyce Martins, Álvaro Moreira, Renata Vieira, Willem Visser, Mike Wooldridge, but also many others, as acknowledged in the manual (see the http://jason-lang.github.io/[documents] page).
+Upstream (original) Jason is developed by https://jomifred.github.io[Jomi F. Hübner] and http://www.inf.pucrs.br/r.bordini[Rafael H. Bordini], based on previous work done with many colleagues, in particular Michael Fisher, Joyce Martins, Álvaro Moreira, Renata Vieira, Willem Visser, Mike Wooldridge, but also many others, as acknowledged in the manual (see the http://jason-lang.github.io/[documents] page).
+
+== Motivation ==
+
+Jason/FG exists to experiment with a few tweaks and different ideas we have, related to building Agents and using AgentSpeak in AI applications.
+The goal is not really to maintain a perpetual fork, and any changes made here should be considered offered to the Jason community for inclusion
+in upstream Jason if desired. But we acknowledge that there may not be interest in going down some of these paths, and this fork will remain active so long as we find it useful. 
+
+=== But why "FG"? ===
+
+It's short for "Fogbeam", as in "Fogbeam Labs" and serves as a simple way to discriminate our fork from the upstream/original project. 
 
 == Documentation
 
-Most of the Jason documentation is available xref:doc/readme.adoc[in the doc folder] and at the http://jason-lang.github.io[Jason web site].
+Most of the Jason/FG documentation is available xref:doc/readme.adoc[in the doc folder].
 
 == Installation
 
-=== For Jason users
+=== For Jason/FG users
 
 Follow the xref:doc/tutorials/getting-started/readme.adoc[getting started tutorial].
 
-NOTE: In Jason 3.2 no IDE is included in Jason distribution. A link:jason-cli[command line interpreter] is now provided.
+NOTE: In Jason/FG 3.2 no IDE is included in Jason distribution. A link:jason-cli[command line interpreter] is now provided.
 
-=== For Jason developers
+=== For Jason/FG developers
 
 ----
-git clone https://github.com/jason-lang/jason.git
-cd jason
+git clone https://github.com/mindcrime/jasonfg.git
+cd jasonfg
 ./gradlew config // <1> <2>
 ----
-<1> the config task builds the JasonCLI (Jason Command Line Interface).
+<1> the config task builds the Jason/FG CLI (Jason Command Line Interface).
 <2> this task also prints out the commands to set up the `JASON_HOME` and `PATH` variables.
 
 Examples can be run using the `jason` command, for example:
@@ -49,12 +59,4 @@ Other useful gradle tasks:
 
 You can use your IDE to change the Jason implementation by importing the Gradle project.
 
-== Jason as a Library
-
-You can add Jason in your Gradle project with:
-
-----
-dependencies {
-    implementation 'io.github.jason-lang:jason-interpreter:3.2.0'
-}
 ----
