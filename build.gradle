@@ -1,11 +1,32 @@
 /*
    Jason Gradle build file
 */
+ 
+
+buildscript {
+	repositories {
+		mavenCentral()
+		jcenter()
+		maven {
+			url = 'https://plugins.gradle.org/m2/'
+		}
+	}
+	dependencies {
+		classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.24.14"
+	}
+}
+
+
+ 
+plugins {
+	// Apply the java-library plugin for API and implementation separation.
+	id 'java-library'
+	id 'maven-publish'
+}
 
 apply plugin: 'java-library'
 
 defaultTasks 'config'
-
 
 java {
 	toolchain {
@@ -30,9 +51,6 @@ dependencies {
 	
 		
 }
-
-
-
 
 clean {
     delete 'bin'

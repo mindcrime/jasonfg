@@ -11,6 +11,8 @@ defaultTasks 'jar'
 
 apply plugin: 'java-library'
 apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.artifactory'
+
 
 version "${jasonVersion}"
 group   "${groupId}"
@@ -91,11 +93,11 @@ artifacts {
 
 publishing {
     publications {
-        maven(MavenPublication) {
+        mavenJava(MavenPublication) {
             from components.java
 //                  artifact sourceJar
 //                  artifact javadocJar
-            artifactId 'jason-interpreter'
+            	artifactId 'jason-interpreter'
         }
     }
 }
@@ -200,3 +202,25 @@ task testJason(dependsOn: 'jar') {
     }
 }
 //tasks.build.finalizedBy testJason
+
+artifactory {
+	publish {
+		contextUrl = "${artifactoryBaseUrl}/artifactory"
+
+		repository {
+			// repoKey = version.contains('SNAPSHOT') ? 'libs-snapshot-local' : 'libs-release-local'
+			repoKey = "libs-release-local"
+			// releaseRepoKey = "libs-release-local"
+			username = project.property('artifactoryUsername')
+			password = project.property('artifactoryPassword')
+			maven = true
+		}
+
+		defaults {
+			publications('mavenJava')
+			publishArtifacts = true
+			publishPom = true
+			publishBuildInfo = false
+		}
+	}
+}
