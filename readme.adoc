@@ -17,6 +17,10 @@ in upstream Jason if desired. But we acknowledge that there may not be interest 
 
 It's short for "Fogbeam", as in "Fogbeam Labs" and serves as a simple way to discriminate our fork from the upstream/original project. 
 
+=== Changes from upstream Jason ===
+
+So far the only change of any note is a switch away from JUL (java.util.logging) for logging, in favor of slf4j and logback.
+
 == Documentation
 
 Most of the Jason/FG documentation is available xref:doc/readme.adoc[in the doc folder].
