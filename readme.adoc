@@ -21,6 +21,14 @@ It's short for "Fogbeam", as in "Fogbeam Labs" and serves as a simple way to dis
 
 So far the only change of any note is a switch away from JUL (java.util.logging) for logging, in favor of slf4j and logback.
 
+=== Known Issues ===
+
+The change from JUL to SLF4J and Logback breaks a couple of specific aspects of JasonFG compared to upstream Jason. Specifically, the ability to use the MASConsoleGUI, and the log() internal action. The hope to get both of those aspects fixed relatively soon.
+
+=== Roadmap (further changes) ===
+
+TBD. 
+
 == Documentation
 
 Most of the Jason/FG documentation is available xref:doc/readme.adoc[in the doc folder].
