@@ -87,29 +87,12 @@ public class log extends DefaultInternalAction {
             }
         }
 
-        String levelFunctor = ((Atom)args[0]).getFunctor();
-        
-        // TODO: do we need this now that we're switching to slf4j?
-        /* 
-        Level level;
-        switch (((Atom)args[0]).getFunctor()) {
-        case "severe": level = Level.SEVERE; break;
-        case "warning": level = Level.WARNING; break;
-        case "fine": level = Level.FINE; break;
-        case "finer": level = Level.FINER; break;
-        case "finest": level = Level.FINEST; break;
-        default:
-            level = Level.INFO; break;
-        }
-		*/
-        
+        String levelFunctor = ((Atom)args[0]).getFunctor();        
+        levelFunctor = levelFunctor.toUpperCase();
         
         if (ts != null) {
-        	
-        	// the old way:
-        	// ts.getLogger().log(level, sout.toString());
-        	
         	// updated to use slf4j
+        	
         	ts.getLogger().atLevel( Level.valueOf( levelFunctor ) ).log(sout.toString());
         	
         } else {

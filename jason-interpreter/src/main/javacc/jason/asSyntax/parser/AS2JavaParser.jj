@@ -30,7 +30,6 @@ PARSER_BEGIN(as2j)
 
   import java.util.*;
   import java.io.*;
-  import java.util.logging.*;
   import java.util.regex.Matcher;
   import java.util.regex.Pattern;
 
@@ -46,6 +45,8 @@ PARSER_BEGIN(as2j)
   import jason.asSyntax.Trigger.TEOperator;
   import jason.asSyntax.Trigger.TEType;
   import jason.util.*;
+  import org.slf4j.Logger;
+  import org.slf4j.LoggerFactory;
 
   public class as2j {
     private String    asSource = "";
@@ -58,7 +59,7 @@ PARSER_BEGIN(as2j)
     private DirectiveProcessor directiveProcessor = new DirectiveProcessor();
     private NameSpace nsDirective = (NameSpace)directiveProcessor.getInstance("namespace");
 
-    private static Logger logger = Logger.getLogger("aslparser");
+    private static Logger logger = LoggerFactory.getLogger(as2j.class);
     private static Set<String> parsedFiles = new HashSet<String>();
     private static Config config = Config.get(false);
     private static Pattern patternUnnamedWithId = Pattern.compile("_(\\d+)(.*)");
@@ -233,7 +234,7 @@ void agent_component(Agent a) throws jason.JasonException :
                                 if (config.getBoolean(Config.WARN_SING_VAR) && !parsedFiles.contains(asSource)) {
                                   List<VarTerm> singletonVars = p.getSingletonVars();
                                   if (singletonVars.size() > 0) {
-                                    logger.warning(getSourceRef(p.getSrcInfo())+" warning: the plan for event '"+p.getTrigger()+"' has the following singleton variables: "+singletonVars);
+                                    logger.warn(getSourceRef(p.getSrcInfo())+" warning: the plan for event '"+p.getTrigger()+"' has the following singleton variables: "+singletonVars);
                                   }
                                 }
                               }
@@ -319,7 +320,7 @@ Literal belief() : { Literal h; Object t; }
                                if (config.getBoolean(Config.WARN_SING_VAR) && !parsedFiles.contains(asSource)) {
                                   List<VarTerm> singletonVars = h.getSingletonVars();
                                   if (singletonVars.size() > 0) {
-                                     logger.warning(getSourceRef(h)+" warning: the rule with head '"+((Rule)h).headClone()+"' has the following singleton variables: "+singletonVars);
+                                     logger.warn(getSourceRef(h)+" warning: the rule with head '"+((Rule)h).headClone()+"' has the following singleton variables: "+singletonVars);
                                   }
                                }
                              }
@@ -847,7 +848,7 @@ Literal literal() :
                                           return new InternalActionLiteral(F, curAg);
                                       } catch (Exception e) {
                                         if (getArithFunction(F) == null) // it is not a registered function
-                                          logger.warning(getSourceRef(F)+" warning: The internal action class for '"+F+"' was not loaded! Error: "+e);
+                                          logger.warn(getSourceRef(F)+" warning: The internal action class for '"+F+"' was not loaded! Error: "+e);
                                       }
                                     }
                                   }
