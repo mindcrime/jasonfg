@@ -29,7 +29,7 @@ import jason.infra.local.BaseLocalMAS;
 public class MASConsoleGUI {
 
     protected static MASConsoleGUI masConsole        = null;
-    public    static String        isTabbedPropField = MASConsoleLogHandler.class.getName() + ".tabbed";
+    public    static String        isTabbedPropField = "NOTUSED"; // MASConsoleLogHandler.class.getName() + ".tabbed";
 
     private boolean                isTabbed          = false;
 
